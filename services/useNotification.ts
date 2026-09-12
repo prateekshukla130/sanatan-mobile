@@ -1,16 +1,16 @@
 /**
- * useNotifications.ts  — v3
+ * useNotifications.ts — v4
  *
  * Loads preferences from AsyncStorage, exposes updatePref(),
- * and syncs user location (from usePanchangLocation — same hook CalendarScreen
- * uses) into prefs.lat / prefs.lng so library calls use real coordinates.
+ * and syncs user location into prefs.lat / prefs.lng.
  *
- * Deep-links: notification tap → navigation.navigate(data.screen)
+ * Deep-links: notification tap → Expo Router navigation
  */
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import * as Notifications from "expo-notifications";
-import { useNavigation } from "@react-navigation/native";
+import { router } from "expo-router";
+
 import {
   NotificationPrefs,
   CustomReminder,
@@ -22,6 +22,7 @@ import {
   scheduleCustomReminder,
   cancelCustomReminder,
 } from "../services/notificationService";
+
 import { usePanchangLocation } from "../services/panchangService";
 
 export interface UseNotificationsReturn {
@@ -39,21 +40,18 @@ export interface UseNotificationsReturn {
 }
 
 export function useNotifications(): UseNotificationsReturn {
-  const [prefs, setPrefs] = useState<NotificationPrefs>({ ...DEFAULT_PREFS });
+  const [prefs, setPrefs] = useState<NotificationPrefs>({
+    ...DEFAULT_PREFS,
+  });
+
   const [loading, setLoading] = useState(true);
   const [permissionGranted, setPermission] = useState(false);
 
-  const notifListener = useRef<Notifications.Subscription>();
-  const responseListener = useRef<Notifications.Subscription>();
+  const notifListener = useRef<Notifications.Subscription | null>(null);
+  const responseListener = useRef<Notifications.Subscription | null>(null);
 
   // Same location source CalendarScreen uses
   const { location } = usePanchangLocation();
-
-  // Optional navigation for deep-linking
-  let navigation: any = null;
-  try {
-    navigation = useNavigation();
-  } catch {}
 
   // ── Load prefs on mount ────────────────────
   useEffect(() => {
@@ -62,6 +60,7 @@ export function useNotifications(): UseNotificationsReturn {
         loadPrefs(),
         requestNotificationPermission(),
       ]);
+
       setPrefs(loaded);
       setPermission(granted);
       setLoading(false);
@@ -69,26 +68,29 @@ export function useNotifications(): UseNotificationsReturn {
   }, []);
 
   // ── Sync location into prefs whenever it resolves ──
-  // This mirrors how CalendarScreen passes location to Observer()
   useEffect(() => {
     if (!location?.latitude || !location?.longitude) return;
+
     setPrefs((prev) => {
       const updated = {
         ...prev,
         lat: location.latitude,
         lng: location.longitude,
       };
-      // Persist silently — no need to re-schedule just for coord update
+
+      // Persist silently
       savePrefs(updated).catch(() => {});
+
       return updated;
     });
   }, [location?.latitude, location?.longitude]);
 
-  // ── Deep-link on notification tap ─────────
+  // ── Notification listeners ─────────────────
   useEffect(() => {
     notifListener.current = Notifications.addNotificationReceivedListener(
       () => {
-        // foreground — no-op (alert already shown by handler)
+        // Foreground notification received.
+        // Notification handler controls the alert.
       },
     );
 
@@ -97,13 +99,14 @@ export function useNotifications(): UseNotificationsReturn {
         const data = response.notification.request.content.data as {
           screen?: string;
         };
-        if (!navigation || !data?.screen) return;
+
+        if (!data?.screen) return;
+
         try {
-          navigation.navigate(data.screen as never);
-        } catch {
-          try {
-            navigation.navigate("Main", { screen: data.screen });
-          } catch {}
+          // Expo Router navigation
+          router.push(data.screen as any);
+        } catch (error) {
+          console.warn("Notification navigation failed:", error);
         }
       });
 
@@ -111,7 +114,7 @@ export function useNotifications(): UseNotificationsReturn {
       notifListener.current?.remove();
       responseListener.current?.remove();
     };
-  }, [navigation]);
+  }, []);
 
   // ── Update single pref ─────────────────────
   const updatePref = useCallback(
@@ -120,42 +123,56 @@ export function useNotifications(): UseNotificationsReturn {
       value: NotificationPrefs[K],
     ) => {
       setPrefs((prev) => {
-        const updated = { ...prev, [key]: value };
+        const updated = {
+          ...prev,
+          [key]: value,
+        };
+
         savePrefs(updated)
           .then(() => applyAllNotificationPrefs(updated))
           .catch(console.error);
+
         return updated;
       });
     },
     [],
   );
 
-  // ── Custom reminder helpers ────────────────
+  // ── Add custom reminder ────────────────────
   const addCustomReminder = useCallback(async (reminder: CustomReminder) => {
     setPrefs((prev) => {
       const updated: NotificationPrefs = {
         ...prev,
         customReminders: [...prev.customReminders, reminder],
       };
+
       savePrefs(updated).catch(console.error);
-      if (reminder.enabled)
+
+      if (reminder.enabled) {
         scheduleCustomReminder(reminder, updated).catch(console.error);
+      }
+
       return updated;
     });
   }, []);
 
+  // ── Remove custom reminder ─────────────────
   const removeCustomReminder = useCallback(async (id: string) => {
     await cancelCustomReminder(id);
+
     setPrefs((prev) => {
       const updated: NotificationPrefs = {
         ...prev,
         customReminders: prev.customReminders.filter((r) => r.id !== id),
       };
+
       savePrefs(updated).catch(console.error);
+
       return updated;
     });
   }, []);
 
+  // ── Toggle custom reminder ─────────────────
   const toggleCustomReminder = useCallback(
     async (id: string, enabled: boolean) => {
       setPrefs((prev) => {
@@ -165,23 +182,30 @@ export function useNotifications(): UseNotificationsReturn {
             r.id === id ? { ...r, enabled } : r,
           ),
         };
+
         savePrefs(updated).catch(console.error);
+
         const rem = updated.customReminders.find((r) => r.id === id);
+
         if (rem) {
           (enabled
             ? scheduleCustomReminder(rem, updated)
             : cancelCustomReminder(id)
           ).catch(console.error);
         }
+
         return updated;
       });
     },
     [],
   );
 
+  // ── Request notification permission ────────
   const requestPermission = useCallback(async () => {
     const granted = await requestNotificationPermission();
+
     setPermission(granted);
+
     return granted;
   }, []);
 

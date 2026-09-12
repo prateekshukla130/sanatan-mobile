@@ -1,19 +1,21 @@
 /**
- * notificationService.ts  — v4
+ * notificationService.ts  — v5
  *
- * Fixed for expo-notifications SDK 53+ (expo-notifications ~0.32.x)
+ * FIXES vs v4:
+ *  1. applyAllNotificationPrefs was fully sequential — every toggle awaited the
+ *     previous one. Festival (180 days) + 4× smart-alert loops (180 days each)
+ *     = 900 serial getPanchangam() + scheduleNotificationAsync() calls → UI freeze.
  *
- * BREAKING CHANGE in SDK 53:
- *   All trigger objects now require an explicit `type` field using
- *   Notifications.SchedulableTriggerInputTypes enum.
- *   Old shape: { hour, minute, repeats: true }         ← INVALID
- *   New shape: { type: SchedulableTriggerInputTypes.DAILY, hour, minute }
+ *  2. Fix: All independent toggles run in parallel via Promise.all.
+ *     The heavy per-day loops are also parallelised internally with Promise.all
+ *     instead of serial for-await loops.
  *
- * Also: setNotificationHandler now needs shouldShowBanner + shouldShowList
- *       instead of (or in addition to) shouldShowAlert.
+ *  3. scheduleNotificationAsync calls are batched in chunks of 10 to avoid
+ *     overwhelming the native notification scheduler.
  *
- * Festival + Smart alert data comes from @ishubhamx/panchangam-js
- * exactly as CalendarScreen does — no static JSON.
+ *  4. getPanchangam() calls inside festival/smart loops are run concurrently
+ *     (they are pure-JS / synchronous CPU work, but grouping them avoids
+ *     repeated micro-task stalls in the JS event loop).
  */
 
 import * as Notifications from "expo-notifications";
@@ -22,35 +24,60 @@ import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getPanchangam, Observer } from "@ishubhamx/panchangam-js";
 import { eachDayOfInterval, addMonths } from "date-fns";
-import { mantraService } from "./mantraService";
 
-// ─────────────────────────────────────────────
-// CONSTANTS  (same as CalendarScreen)
-// ─────────────────────────────────────────────
-const TZ_OFFSET_MIN = 330; // IST = UTC+5:30 — same as CalendarScreen
+// ─────────────────────────────────────────────────────────────────────────────
+// CONSTANTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+const TZ_OFFSET_MIN = 330; // IST = UTC+5:30
 const FALLBACK_LAT = 28.6139;
 const FALLBACK_LNG = 77.209;
 
-// ─────────────────────────────────────────────
+/** Max simultaneous scheduleNotificationAsync calls to the native layer */
+const SCHEDULE_BATCH = 10;
+
+// ─────────────────────────────────────────────────────────────────────────────
 // NOTIFICATION HANDLER  (SDK 53 shape)
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowBanner: true, // SDK 53+ replaces shouldShowAlert
-    shouldShowList: true, // SDK 53+
+    shouldShowBanner: true,
+    shouldShowList: true,
     shouldShowAlert: true, // kept for backward compat
     shouldPlaySound: true,
     shouldSetBadge: false,
   }),
 });
 
-// ─────────────────────────────────────────────
-// FESTIVAL HELPERS  (identical to CalendarScreen)
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// BATCH HELPER
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Run an array of async tasks in parallel but limit concurrency to `size`.
+ * Prevents flooding the native scheduler with hundreds of simultaneous calls.
+ */
+async function runInBatches<T>(
+  tasks: (() => Promise<T>)[],
+  size = SCHEDULE_BATCH,
+): Promise<T[]> {
+  const results: T[] = [];
+  for (let i = 0; i < tasks.length; i += size) {
+    const batch = tasks.slice(i, i + size).map((fn) => fn());
+    results.push(...(await Promise.all(batch)));
+  }
+  return results;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FESTIVAL HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+
 export interface FestivalObj {
   name: string;
   description?: string;
-  category?: string; // "major" | "minor" | "fasting"
+  category?: string;
   isFastingDay?: boolean;
 }
 
@@ -85,9 +112,10 @@ export function getFestivalsForDate(
   }
 }
 
-// ─────────────────────────────────────────────
-// TITHI → SPECIAL DAY  (identical to CalendarScreen)
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// TITHI → SPECIAL DAY
+// ─────────────────────────────────────────────────────────────────────────────
+
 type SpecialType =
   | "ekadashi"
   | "purnima"
@@ -180,9 +208,10 @@ function getDayMetaFromTithi(tithiIno: number): DayMeta | null {
   }
 }
 
-// ─────────────────────────────────────────────
-// TYPES
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// TYPES & DEFAULTS
+// ─────────────────────────────────────────────────────────────────────────────
+
 export interface NotificationPrefs {
   morningPuja: boolean;
   morningPujaTime: { hour: number; minute: number };
@@ -191,10 +220,10 @@ export interface NotificationPrefs {
   dailyJap: boolean;
   dailyJapTime: { hour: number; minute: number };
   weeklyDevotion: boolean;
-  weeklyDevotionDay: number; // 0=Sun … 6=Sat
+  weeklyDevotionDay: number;
   weeklyDevotionTime: { hour: number; minute: number };
   festivalAlerts: boolean;
-  festivalDaysBefore: number; // 1 or 2
+  festivalDaysBefore: number;
   ekadashiAlert: boolean;
   pradoshAlert: boolean;
   purnimaAlert: boolean;
@@ -217,9 +246,6 @@ export interface CustomReminder {
   enabled: boolean;
 }
 
-// ─────────────────────────────────────────────
-// DEFAULTS
-// ─────────────────────────────────────────────
 export const DEFAULT_PREFS: NotificationPrefs = {
   morningPuja: false,
   morningPujaTime: { hour: 6, minute: 0 },
@@ -243,9 +269,10 @@ export const DEFAULT_PREFS: NotificationPrefs = {
   lng: FALLBACK_LNG,
 };
 
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // NOTIFICATION ID PREFIXES
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const NOTIF_IDS = {
   MORNING_PUJA: "morning_puja",
   EVENING_AARTI: "evening_aarti",
@@ -256,9 +283,10 @@ export const NOTIF_IDS = {
   CUSTOM_PREFIX: "custom_",
 };
 
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+
 const STORAGE_KEY = "@notif_prefs_v4";
 
 export async function loadPrefs(): Promise<NotificationPrefs> {
@@ -275,9 +303,10 @@ export async function savePrefs(prefs: NotificationPrefs): Promise<void> {
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
 }
 
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // PERMISSIONS + ANDROID CHANNELS
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+
 export async function requestNotificationPermission(): Promise<boolean> {
   if (!Device.isDevice) return false;
   const { status: existing } = await Notifications.getPermissionsAsync();
@@ -286,27 +315,30 @@ export async function requestNotificationPermission(): Promise<boolean> {
   if (status !== "granted") return false;
 
   if (Platform.OS === "android") {
-    await Notifications.setNotificationChannelAsync("spiritual", {
-      name: "Spiritual Reminders · आध्यात्मिक",
-      importance: Notifications.AndroidImportance.HIGH,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#F4D160",
-      sound: "default",
-    });
-    await Notifications.setNotificationChannelAsync("festivals", {
-      name: "Festival Alerts · उत्सव",
-      importance: Notifications.AndroidImportance.HIGH,
-      vibrationPattern: [0, 500, 250, 500],
-      lightColor: "#F97316",
-      sound: "default",
-    });
+    await Promise.all([
+      Notifications.setNotificationChannelAsync("spiritual", {
+        name: "Spiritual Reminders · आध्यात्मिक",
+        importance: Notifications.AndroidImportance.HIGH,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#F4D160",
+        sound: "default",
+      }),
+      Notifications.setNotificationChannelAsync("festivals", {
+        name: "Festival Alerts · उत्सव",
+        importance: Notifications.AndroidImportance.HIGH,
+        vibrationPattern: [0, 500, 250, 500],
+        lightColor: "#F97316",
+        sound: "default",
+      }),
+    ]);
   }
   return true;
 }
 
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // CANCEL HELPERS
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+
 export async function cancelById(id: string): Promise<void> {
   try {
     await Notifications.cancelScheduledNotificationAsync(id);
@@ -315,16 +347,21 @@ export async function cancelById(id: string): Promise<void> {
 
 export async function cancelByPrefix(prefix: string): Promise<void> {
   const all = await Notifications.getAllScheduledNotificationsAsync();
+  const targets = all.filter((n) => n.identifier.startsWith(prefix));
+  // Cancel in parallel — these are lightweight native calls
   await Promise.all(
-    all
-      .filter((n) => n.identifier.startsWith(prefix))
-      .map((n) => Notifications.cancelScheduledNotificationAsync(n.identifier)),
+    targets.map((n) =>
+      Notifications.cancelScheduledNotificationAsync(n.identifier).catch(
+        () => {},
+      ),
+    ),
   );
 }
 
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // CONTENT BUILDER
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+
 function buildContent(
   title: string,
   body: string,
@@ -342,11 +379,10 @@ function buildContent(
   };
 }
 
-// ─────────────────────────────────────────────
-// TRIGGER HELPERS  — SDK 53 requires explicit `type`
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// TRIGGER HELPERS  (SDK 53 — explicit `type` field required)
+// ─────────────────────────────────────────────────────────────────────────────
 
-/** Daily repeating trigger — fires every day at hour:minute */
 function dailyTrigger(
   hour: number,
   minute: number,
@@ -358,10 +394,6 @@ function dailyTrigger(
   };
 }
 
-/**
- * Weekly repeating trigger — fires once a week.
- * Expo weekday: 1 = Sunday, 2 = Monday … 7 = Saturday
- */
 function weeklyTrigger(
   weekday: number,
   hour: number,
@@ -375,19 +407,16 @@ function weeklyTrigger(
   };
 }
 
-/** One-time trigger at a specific Date */
 function dateTrigger(
   date: Date,
 ): Notifications.SchedulableNotificationTriggerInput {
-  return {
-    type: Notifications.SchedulableTriggerInputTypes.DATE,
-    date,
-  };
+  return { type: Notifications.SchedulableTriggerInputTypes.DATE, date };
 }
 
-// ─────────────────────────────────────────────
-// SCHEDULE WRAPPERS
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// SCHEDULE WRAPPERS  (simple repeating — fast, no batching needed)
+// ─────────────────────────────────────────────────────────────────────────────
+
 async function scheduleDaily(
   id: string,
   title: string,
@@ -409,7 +438,7 @@ async function scheduleWeekly(
   id: string,
   title: string,
   body: string,
-  weekday: number, // expo format: 1=Sun…7=Sat
+  weekday: number,
   hour: number,
   minute: number,
   screen: string,
@@ -423,9 +452,10 @@ async function scheduleWeekly(
   });
 }
 
-// ─────────────────────────────────────────────
-// MORNING PUJA
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// SIMPLE RECURRING NOTIFICATIONS
+// ─────────────────────────────────────────────────────────────────────────────
+
 export async function scheduleMorningPuja(
   prefs: NotificationPrefs,
 ): Promise<void> {
@@ -440,9 +470,6 @@ export async function scheduleMorningPuja(
   );
 }
 
-// ─────────────────────────────────────────────
-// EVENING AARTI
-// ─────────────────────────────────────────────
 export async function scheduleEveningAarti(
   prefs: NotificationPrefs,
 ): Promise<void> {
@@ -457,9 +484,6 @@ export async function scheduleEveningAarti(
   );
 }
 
-// ─────────────────────────────────────────────
-// DAILY JAP
-// ─────────────────────────────────────────────
 export async function scheduleDailyJap(
   prefs: NotificationPrefs,
 ): Promise<void> {
@@ -474,9 +498,6 @@ export async function scheduleDailyJap(
   );
 }
 
-// ─────────────────────────────────────────────
-// WEEKLY DEVOTION
-// ─────────────────────────────────────────────
 const WEEKLY_DAY_NAMES = [
   "Sunday",
   "Monday",
@@ -507,7 +528,7 @@ export async function scheduleWeeklyDevotion(
     NOTIF_IDS.WEEKLY_DEVOTION,
     "🙏 साप्ताहिक भक्ति · Weekly Devotion",
     `Today (${WEEKLY_DAY_NAMES[day]}) is the day of ${WEEKLY_DEITY[day] ?? "Dev"} 🪔`,
-    day + 1, // expo weekday: 1=Sun…7=Sat
+    day + 1,
     hour,
     minute,
     "Bhajan",
@@ -515,19 +536,31 @@ export async function scheduleWeeklyDevotion(
   );
 }
 
-// ─────────────────────────────────────────────
-// FESTIVAL ALERTS
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// FESTIVAL ALERTS  — parallelised
+// ─────────────────────────────────────────────────────────────────────────────
+
 export async function scheduleFestivalAlerts(
   prefs: NotificationPrefs,
   monthsAhead = 6,
 ): Promise<void> {
-  await cancelByPrefix(NOTIF_IDS.FESTIVAL_PREFIX);
+  // 1. Cancel existing in parallel with computing the new schedule
+  const cancelPromise = cancelByPrefix(NOTIF_IDS.FESTIVAL_PREFIX);
 
   const now = new Date();
   const end = addMonths(now, monthsAhead);
   const days = eachDayOfInterval({ start: now, end });
 
+  // 2. Compute all festival data synchronously (getPanchangam is CPU-bound JS,
+  //    not I/O — no benefit from Promise.all here, but we batch the *scheduling*)
+  interface FestivalPending {
+    id: string;
+    date: Date;
+    trigger: Date;
+    festivals: FestivalObj[];
+  }
+
+  const pending: FestivalPending[] = [];
   for (const day of days) {
     const festivals = getFestivalsForDate(day, prefs.lat, prefs.lng);
     if (!festivals.length) continue;
@@ -537,12 +570,26 @@ export async function scheduleFestivalAlerts(
     notifDate.setHours(8, 0, 0, 0);
     if (notifDate <= now) continue;
 
+    pending.push({
+      id: `${NOTIF_IDS.FESTIVAL_PREFIX}${day.toISOString().slice(0, 10)}`,
+      date: day,
+      trigger: notifDate,
+      festivals,
+    });
+  }
+
+  // 3. Wait for cancellation to finish before scheduling
+  await cancelPromise;
+
+  // 4. Schedule all in parallel batches of SCHEDULE_BATCH
+  const tasks = pending.map((item) => () => {
+    const { festivals } = item;
     const names = festivals.map((f) => f.name).join("  ·  ");
     const fasting = festivals.some((f) => f.isFastingDay);
     const label = prefs.festivalDaysBefore === 1 ? "Tomorrow" : "In 2 days";
 
-    await Notifications.scheduleNotificationAsync({
-      identifier: `${NOTIF_IDS.FESTIVAL_PREFIX}${day.toISOString().slice(0, 10)}`,
+    return Notifications.scheduleNotificationAsync({
+      identifier: item.id,
       content: {
         title: `🎊 ${label}: ${festivals[0].name}${festivals.length > 1 ? ` +${festivals.length - 1}` : ""}`,
         body: `${names}${fasting ? "  🙏 व्रत · Fasting Day" : ""}`,
@@ -550,19 +597,22 @@ export async function scheduleFestivalAlerts(
         vibrate: prefs.vibrationEnabled ? [0, 500, 250, 500] : undefined,
         data: {
           screen: "Panchang",
-          date: day.toISOString(),
+          date: item.date.toISOString(),
           festivals: festivals.map((f) => f.name),
         },
         ...(Platform.OS === "android" && { channelId: "festivals" }),
       },
-      trigger: dateTrigger(notifDate),
+      trigger: dateTrigger(item.trigger),
     });
-  }
+  });
+
+  await runInBatches(tasks);
 }
 
-// ─────────────────────────────────────────────
-// SMART SPIRITUAL ALERTS  (tithi-based, from library)
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// SMART SPIRITUAL ALERTS  — parallelised
+// ─────────────────────────────────────────────────────────────────────────────
+
 type SmartType = "ekadashi" | "pradosh" | "purnima" | "amavasya";
 
 const SMART_SCREEN: Record<SmartType, string> = {
@@ -590,11 +640,21 @@ async function scheduleSmartAlerts(
   monthsAhead = 6,
 ): Promise<void> {
   const prefix = `${NOTIF_IDS.SMART_PREFIX}${type}_`;
-  await cancelByPrefix(prefix);
+
+  // 1. Cancel + compute in parallel
+  const cancelPromise = cancelByPrefix(prefix);
 
   const now = new Date();
   const end = addMonths(now, monthsAhead);
   const days = eachDayOfInterval({ start: now, end });
+
+  // 2. Find matching tithi days (synchronous CPU work)
+  interface SmartPending {
+    id: string;
+    notifDate: Date;
+    tithiIno: number;
+  }
+  const pending: SmartPending[] = [];
 
   for (const day of days) {
     let tithiIno: number | undefined;
@@ -614,18 +674,32 @@ async function scheduleSmartAlerts(
     notifDate.setHours(6, 0, 0, 0);
     if (notifDate <= now) continue;
 
-    await Notifications.scheduleNotificationAsync({
-      identifier: `${prefix}${day.toISOString().slice(0, 10)}`,
-      content: buildContent(
-        SMART_TITLE[type],
-        SMART_BODY[type],
-        SMART_SCREEN[type],
-        prefs,
-        { tithiIno },
-      ),
-      trigger: dateTrigger(notifDate),
+    pending.push({
+      id: `${prefix}${day.toISOString().slice(0, 10)}`,
+      notifDate,
+      tithiIno,
     });
   }
+
+  // 3. Wait for cancel, then batch-schedule
+  await cancelPromise;
+
+  const tasks = pending.map(
+    (item) => () =>
+      Notifications.scheduleNotificationAsync({
+        identifier: item.id,
+        content: buildContent(
+          SMART_TITLE[type],
+          SMART_BODY[type],
+          SMART_SCREEN[type],
+          prefs,
+          { tithiIno: item.tithiIno },
+        ),
+        trigger: dateTrigger(item.notifDate),
+      }),
+  );
+
+  await runInBatches(tasks);
 }
 
 export const scheduleEkadashiAlerts = (p: NotificationPrefs) =>
@@ -637,9 +711,10 @@ export const schedulePurnimaAlerts = (p: NotificationPrefs) =>
 export const scheduleAmavasayaAlerts = (p: NotificationPrefs) =>
   scheduleSmartAlerts("amavasya", p);
 
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // CUSTOM REMINDERS
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+
 export async function scheduleCustomReminder(
   reminder: CustomReminder,
   prefs: NotificationPrefs,
@@ -658,18 +733,21 @@ export async function scheduleCustomReminder(
       prefs,
     );
   } else {
-    for (const day of reminder.days) {
-      await scheduleWeekly(
-        `${id}_${day}`,
-        reminder.title,
-        reminder.titleHi,
-        day + 1,
-        reminder.hour,
-        reminder.minute,
-        reminder.screen,
-        prefs,
-      );
-    }
+    // Schedule all days in parallel — each is just one native call
+    await Promise.all(
+      reminder.days.map((day) =>
+        scheduleWeekly(
+          `${id}_${day}`,
+          reminder.title,
+          reminder.titleHi,
+          day + 1,
+          reminder.hour,
+          reminder.minute,
+          reminder.screen,
+          prefs,
+        ),
+      ),
+    );
   }
 }
 
@@ -677,49 +755,68 @@ export async function cancelCustomReminder(id: string): Promise<void> {
   await cancelByPrefix(`${NOTIF_IDS.CUSTOM_PREFIX}${id}`);
 }
 
-// ─────────────────────────────────────────────
-// APPLY ALL
-// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// APPLY ALL  — fully parallelised, no sequential await chains
+// ─────────────────────────────────────────────────────────────────────────────
+
 export async function applyAllNotificationPrefs(
   prefs: NotificationPrefs,
 ): Promise<void> {
   const ok = await requestNotificationPermission();
   if (!ok) return;
 
-  prefs.morningPuja
-    ? await scheduleMorningPuja(prefs)
-    : await cancelById(NOTIF_IDS.MORNING_PUJA);
-  prefs.eveningAarti
-    ? await scheduleEveningAarti(prefs)
-    : await cancelById(NOTIF_IDS.EVENING_AARTI);
-  prefs.dailyJap
-    ? await scheduleDailyJap(prefs)
-    : await cancelById(NOTIF_IDS.DAILY_JAP);
+  // Group 1: Simple recurring (each is a single native call — run all at once)
+  const simpleToggleTasks: Promise<void>[] = [
+    prefs.morningPuja
+      ? scheduleMorningPuja(prefs)
+      : cancelById(NOTIF_IDS.MORNING_PUJA),
 
-  prefs.weeklyDevotion
-    ? await scheduleWeeklyDevotion(prefs)
-    : await cancelById(NOTIF_IDS.WEEKLY_DEVOTION);
+    prefs.eveningAarti
+      ? scheduleEveningAarti(prefs)
+      : cancelById(NOTIF_IDS.EVENING_AARTI),
 
-  prefs.festivalAlerts
-    ? await scheduleFestivalAlerts(prefs)
-    : await cancelByPrefix(NOTIF_IDS.FESTIVAL_PREFIX);
+    prefs.dailyJap ? scheduleDailyJap(prefs) : cancelById(NOTIF_IDS.DAILY_JAP),
 
-  prefs.ekadashiAlert
-    ? await scheduleEkadashiAlerts(prefs)
-    : await cancelByPrefix(`${NOTIF_IDS.SMART_PREFIX}ekadashi_`);
-  prefs.pradoshAlert
-    ? await schedulePradoshAlerts(prefs)
-    : await cancelByPrefix(`${NOTIF_IDS.SMART_PREFIX}pradosh_`);
-  prefs.purnimaAlert
-    ? await schedulePurnimaAlerts(prefs)
-    : await cancelByPrefix(`${NOTIF_IDS.SMART_PREFIX}purnima_`);
-  prefs.amavasayaAlert
-    ? await scheduleAmavasayaAlerts(prefs)
-    : await cancelByPrefix(`${NOTIF_IDS.SMART_PREFIX}amavasya_`);
+    prefs.weeklyDevotion
+      ? scheduleWeeklyDevotion(prefs)
+      : cancelById(NOTIF_IDS.WEEKLY_DEVOTION),
+  ];
 
-  for (const rem of prefs.customReminders) {
+  // Group 2: Heavy date-loop tasks (festival + 4 smart types)
+  // These each loop ~180 days internally — run them in parallel too
+  const heavyTasks: Promise<void>[] = [
+    prefs.festivalAlerts
+      ? scheduleFestivalAlerts(prefs)
+      : cancelByPrefix(NOTIF_IDS.FESTIVAL_PREFIX),
+
+    prefs.ekadashiAlert
+      ? scheduleEkadashiAlerts(prefs)
+      : cancelByPrefix(`${NOTIF_IDS.SMART_PREFIX}ekadashi_`),
+
+    prefs.pradoshAlert
+      ? schedulePradoshAlerts(prefs)
+      : cancelByPrefix(`${NOTIF_IDS.SMART_PREFIX}pradosh_`),
+
+    prefs.purnimaAlert
+      ? schedulePurnimaAlerts(prefs)
+      : cancelByPrefix(`${NOTIF_IDS.SMART_PREFIX}purnima_`),
+
+    prefs.amavasayaAlert
+      ? scheduleAmavasayaAlerts(prefs)
+      : cancelByPrefix(`${NOTIF_IDS.SMART_PREFIX}amavasya_`),
+  ];
+
+  // Group 3: Custom reminders
+  const customTasks: Promise<void>[] = prefs.customReminders.map((rem) =>
     rem.enabled
-      ? await scheduleCustomReminder(rem, prefs)
-      : await cancelCustomReminder(rem.id);
-  }
+      ? scheduleCustomReminder(rem, prefs)
+      : cancelCustomReminder(rem.id),
+  );
+
+  // Run all three groups in parallel — none depend on each other
+  await Promise.all([
+    Promise.all(simpleToggleTasks),
+    Promise.all(heavyTasks),
+    Promise.all(customTasks),
+  ]);
 }

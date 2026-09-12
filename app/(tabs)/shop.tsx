@@ -460,8 +460,8 @@ export default function ShopScreen() {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={st.featuredList}
             >
-              {featured.map((item) => (
-                <FeaturedCard key={item.id} item={item} />
+              {featured.map((item, index) => (
+                <FeaturedCard key={index + "featured"} item={item} />
               ))}
             </ScrollView>
           </>
@@ -474,9 +474,9 @@ export default function ShopScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={st.tabsRow}
           >
-            {categories.map((cat) => (
+            {categories.map((cat, index) => (
               <CategoryTab
-                key={cat}
+                key={index + "Category"}
                 cat={cat}
                 active={activeCategory === cat}
                 onPress={() => setActiveCategory(cat)}
@@ -501,8 +501,8 @@ export default function ShopScreen() {
         {/* ── LOADING SKELETONS ── */}
         {loading && (
           <View style={st.grid}>
-            {[1, 2, 3, 4].map((i) => (
-              <SkeletonCard key={i} />
+            {[1, 2, 3, 4].map((i, index) => (
+              <SkeletonCard key={index + "Skelton"} />
             ))}
           </View>
         )}

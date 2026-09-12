@@ -434,6 +434,17 @@ export default function ScripturesScreen() {
                 >
                   📖 गीता
                 </Text>
+                <Text
+                  style={[
+                    st.chalisaTabTextEnglish,
+                    tab === "gita" && {
+                      color: colors.gold,
+                      fontWeight: "bold",
+                    },
+                  ]}
+                >
+                  Geeta
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
@@ -455,6 +466,17 @@ export default function ScripturesScreen() {
                   ]}
                 >
                   🙏 चालीसा
+                </Text>
+                <Text
+                  style={[
+                    st.chalisaTabTextEnglish,
+                    tab === "chalisas" && {
+                      color: colors.gold,
+                      fontWeight: "bold",
+                    },
+                  ]}
+                >
+                  Chalisa
                 </Text>
               </TouchableOpacity>
             </View>
@@ -692,6 +714,17 @@ export default function ScripturesScreen() {
               >
                 📖 गीता
               </Text>
+              <Text
+                style={[
+                  st.chalisaTabTextEnglish,
+                  tab === "gita" && {
+                    color: colors.gold,
+                    fontWeight: "bold",
+                  },
+                ]}
+              >
+                Geeta
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
@@ -713,6 +746,17 @@ export default function ScripturesScreen() {
                 ]}
               >
                 🙏 चालीसा
+              </Text>
+              <Text
+                style={[
+                  st.chalisaTabTextEnglish,
+                  tab === "chalisas" && {
+                    color: colors.gold,
+                    fontWeight: "bold",
+                  },
+                ]}
+              >
+                Chalisa
               </Text>
             </TouchableOpacity>
           </View>
@@ -1160,6 +1204,13 @@ const st = StyleSheet.create({
     fontWeight: "600",
     color: colors.textMuted,
     letterSpacing: 0.3,
+  },
+  chalisaTabTextEnglish: {
+    fontSize: typography.fontSize.xs,
+    fontWeight: "600",
+    color: colors.textMuted,
+    letterSpacing: 0.3,
+    marginLeft: 25,
   },
   chalisaTabTextActive: { color: CHALISA_ACCENT, fontWeight: "700" },
 

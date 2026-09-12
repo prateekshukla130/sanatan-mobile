@@ -212,6 +212,10 @@ export const mantraService = {
   async init(): Promise<void> {
     if (_initialized) return;
     try {
+      const isServerOpen = Boolean(process.env.EXPO_USE_SERVER);
+      if (!isServerOpen) {
+        return DAILY_MANTRAS_STATIC;
+      }
       const firebase = await fetchFromFirebase();
       _cache =
         firebase.length > 0
@@ -232,12 +236,15 @@ export const mantraService = {
    * Synchronous — returns today's mantra from cache.
    * Call init() first, or it uses the static fallback automatically.
    */
-  getDailyMantra(): Mantra {
+  getDailyMantra(): Mantra | undefined {
     const pool =
       _cache.length > 0
         ? [..._cache, ...DAILY_MANTRAS_STATIC]
         : DAILY_MANTRAS_STATIC;
-    return pool[new Date().getUTCDay()];
+
+    const dayId = new Date().getUTCDay();
+
+    return pool.find((m) => Number(m.id) === dayId + 1);
   },
 
   /**

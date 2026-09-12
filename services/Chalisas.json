@@ -1,0 +1,464 @@
+[
+  {
+    "id": "0CIMqz21GtVcp0GIy6b1",
+    "title": {
+      "hindi": "श्री विष्णु चालीसा",
+      "sanskrit": "श्रीविष्णुचालीसा",
+      "english": "Shri Vishnu Chalisa"
+    },
+    "startingDoha": {
+      "english": "O Vishnu, listen to the prayer of your servant with focus. As I describe your glories, please grant me wisdom.",
+      "sanskrit": "शान्ताकारं भुजगशयनं पद्मनाभं सुरेशं विश्वाधारं गगनसदृशं मेघवर्णं शुभाङ्गम्॥",
+      "hindi": "विष्णु सुनिए विनय, सेवक की चितलाय। कीरत कुछ वर्णन करूँ, दीजै ज्ञान बताय॥"
+    },
+    "chaupai": {
+      "sanskrit": "नमो विष्णु भगवान खरारी कष्ट नशावन अखिल बिहारी। शंख चक्र गदा पद्म विराजे कौस्तुभ मणि उर बीच बिराजे॥",
+      "english": "Salutations to Lord Vishnu, the destroyer of demons and the remover of suffering. You hold the conch, discus, mace, and lotus. ॥ You reside in the ocean of milk and fulfill the hopes of all devotees. ॥ You are the primal being with infinite forms and the king of the entire universe. ॥ Whenever righteousness declined, you took an incarnation. ॥ As Narasimha, you destroyed the demon; as Rama, you killed Ravana; and as Krishna, you slew Kansa. ॥",
+      "hindi": "नमो विष्णु भगवान खरारी। कष्ट नशावन अखिल बिहारी॥ शंख चक्र गदा पद्म विराजे। कौस्तुभ मणि उर बीच बिराजे॥॥ क्षीर सिंधु में करहु निवासा। सकल भक्त की पूरहु आसा॥ आदि पुरुष अज अगणित रूपा। तुम हो सकल विश्व के भूपा॥॥ जब जब धर्म हानि हुई भाई। तब तब प्रभु तुम देह धराई॥ नरसिंह रूप धरि असुर संहारा। हिरण्याक्ष को स्वर्ग पठारा॥॥ राम रूप धरि रावण मारा। कृष्ण रूप कंस संहारा॥ तुम ही शेष धरत भू भारा। तुम ही जग के सिरजनहारा॥॥"
+    },
+    "endingDoha": {
+      "english": "Whoever reads the Vishnu Chalisa with a loving heart will reach the abode of Vishnu, and their sorrows and poverty will vanish.",
+      "sanskrit": "मंगलम् भगवान विष्णुः, मंगलम् गरुड़ध्वजः। मंगलम् पुण्डरीकाक्षः, मंगलाय तनो हरिः॥",
+      "hindi": "विष्णु चालीसा जो पढ़े, प्रेम सहित मन लाय। विष्णु लोक को प्राप्त हो, दुख दरिद्र मिट जाय॥"
+    },
+    "jaiKara": {
+      "hindi": "भगवान विष्णु की जय! लक्ष्मी नारायण की जय!",
+      "english": "Victory to Lord Vishnu! Victory to Lakshmi-Narayan!",
+      "sanskrit": "ॐ नमो भगवते वासुदेवाय॥"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1772045833,
+      "nanoseconds": 971000000
+    }
+  },
+  {
+    "id": "4jX24m8SfkoBWAPu6nr8",
+    "title": {
+      "hindi": "श्री खाटू श्याम चालीसा",
+      "english": "Shri Khatu Shyam Chalisa",
+      "sanskrit": "श्रीखाटूश्यामचालीसा"
+    },
+    "startingDoha": {
+      "sanskrit": "ॐ खाटू वासाय विद्महे श्याम देवाय धीमहि तन्नो श्यामः प्रचोदयात्॥",
+      "english": "Placing the dust of my Guru's lotus feet in my heart, I recite the Shri Shyam Chalisa with folded hands.",
+      "hindi": "श्री गुरु चरण कमल रज, धर कर हृदय मंझार। श्री श्याम चालीसा कहूँ, विनय करूँ कर जोड़॥"
+    },
+    "chaupai": {
+      "hindi": "जय जय श्री श्याम बिहारी। जय जय खाटू धाम धारी॥ भीम पुत्र घटोत्कच नन्दन। जय बर्बरीक जन मन रञ्जन॥॥ शीश दान तुम प्रभु ने दीन्हा। जग में नाम अमर कर लीन्हा॥ हारे का सहारा तुम हो। सुख का सिन्धु प्यारा तुम हो॥॥ तीन बाण धारी तुम कहलाये। सारे जग में पूजे जाये॥ कलयुग के तुम देव कहाये। भक्तन के तुम कष्ट मिटाये॥॥ जो कोई खाटू धाम को आवे। मनवांछित फल सोई पावे॥ फाल्गुन शुक्ल द्वादशी मेला। देखत बनत है रूप निराला॥॥",
+      "sanskrit": "जय जय श्री श्याम बिहारी जय जय खाटू धाम धारी। भीम पुत्र घटोत्कच नन्दन जय बर्बरीक जन मन रञ्जन॥",
+      "english": "Victory to Shri Shyam Bihari, the Lord of Khatu Dham. You are the son of Ghatotkacha and the delight of people's hearts. ॥ You offered your head in sacrifice and made your name immortal. You are the support of the defeated. ॥ Known as the wielder of three arrows, you are worshipped throughout the world. ॥ You are called the God of the Kaliyuga, removing the troubles of your devotees. ॥ Whoever comes to Khatu Dham attains their heart's desires. ॥"
+    },
+    "endingDoha": {
+      "english": "Whoever reads the Shyam Chalisa with faith and devotion will always find wealth and happiness under the protection of Lord Shyam.",
+      "sanskrit": "हारे का सहारा बाबा श्याम हमारा॥",
+      "hindi": "श्याम चालीसा जो पढ़े, श्रद्धा भक्ति के साथ। सुख संपत्ति पावे सदा, रहे श्याम का हाथ॥"
+    },
+    "jaiKara": {
+      "sanskrit": "ॐ श्री श्याम देवाय नमः॥",
+      "english": "The support of the defeated, our Baba Shyam! Victory to the King of Khatu!",
+      "hindi": "हारे का सहारा, बाबा श्याम हमारा! बोलो खाटू नरेश की जय!"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1772045846,
+      "nanoseconds": 502000000
+    }
+  },
+  {
+    "id": "723fKK83UKnm3kiTW1eO",
+    "title": {
+      "hindi": "श्री लक्ष्मी चालीसा",
+      "english": "Shri Laxmi Chalisa",
+      "sanskrit": "श्रीलक्ष्मीचालीसा"
+    },
+    "startingDoha": {
+      "hindi": "मातु लक्ष्मी करि कृपा, करो हृदय में वास। मनोकामना सिद्ध करि, पुरवहु मेरी आस॥",
+      "english": "Mother Laxmi, please be kind and reside in my heart. Fulfill my desires and complete my hopes.",
+      "sanskrit": "मातु लक्ष्मी करि कृपा करो हृदय में वास। मनोकामना सिद्ध करि पुरवहु मेरी आस॥"
+    },
+    "chaupai": {
+      "hindi": "सिन्धु सुता मैं सुमिरौ तोही। ज्ञान बुद्धि विद्या देहु मोही॥ तुम समान नहिं कोई उपकारी। सब विधि पुरवहु आस हमारी॥॥ जय जय जगत जननी जगदम्बा। सबकी तुम ही हो अवलम्बा॥ तुम ही हो सब घट घट वासी। विनती यही हमारी खासी॥॥ जग जननी जय सिन्धु कुमारी। दीनन की तुम हो हितकारी॥ बिनवौं नित्य तुमहिं महारानी। कृपा करौ जग जननी भवानी॥॥ केहि विधि अस्तुति करौं तुम्हारी। सुधि लीजै अपराध बिसारी॥ कृपा दृष्टि चितवौ मम ओरी। जग जननी विनती सुन मोरी॥॥ ज्ञान बुद्धि सब तुमते पावै। पण्डित कुटिल कुबुद्धि नशावै॥",
+      "sanskrit": "नमस्तेऽस्तु महामाये श्रीपीठे सुरपूजिते। शङ्खचक्रगदाहस्ते महालक्ष्मी नमोऽस्तु ते॥",
+      "english": "O daughter of the Ocean, I meditate upon you. Grant me knowledge, wisdom, and science. ॥ No one is as charitable as you; fulfill my hopes in every way. ॥ Victory to the Mother of the Universe; you are the support of all. ॥ You dwell in every heart; this is my special prayer to you. ॥ How can I praise you enough? Forgive my mistakes and look after me. ॥ All wisdom is received from you; you destroy the evil thoughts of the wicked. ॥"
+    },
+    "endingDoha": {
+      "sanskrit": "लक्ष्मीं क्षीरसमुद्रराजतनयां श्रीरङ्गधामेश्वरीं दासीभूतसमस्तदेववनितां लोकैकदीपाङ्कुराम्।",
+      "english": "O remover of sorrows, save me and quickly remove all my fears. Victory to Goddess Laxmi; destroy my internal enemies.",
+      "hindi": "त्राहि त्राहि दुख हारिणी, हरो वेगि सब त्रास। जयति जयति जय लक्ष्मी, करो शत्रुन का नाश॥"
+    },
+    "jaiKara": {
+      "sanskrit": "ॐ श्रीं ह्रीं श्रीं कमले कमलालये प्रसीद प्रसीद।",
+      "english": "Victory to Mother Mahalakshmi!",
+      "hindi": "महालक्ष्मी माता की जय!"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1772045445,
+      "nanoseconds": 516000000
+    }
+  },
+  {
+    "id": "CGqMtURzOn7PNrqdbBjU",
+    "title": {
+      "english": "Shri Ram Chalisa",
+      "sanskrit": "श्रीरामचालीसा",
+      "hindi": "श्री राम चालीसा"
+    },
+    "startingDoha": {
+      "sanskrit": "श्री रामचन्द्र चरणौ शिरसा नमामि॥",
+      "english": "Starting with the forest exile, the slaying of the golden deer, the abduction of Sita, the death of Jatayu, the talk with Sugriva, the killing of Vali, crossing the ocean, burning Lanka, and finally the slaying of Ravana and Kumbhakarna—this is the Ramayana.",
+      "hindi": "आदौ राम तपोवनादि गमनं, हत्वा मृगं कांचनम्। वैदेही हरणं जटायु मरणं, सुग्रीव संभाषणम्॥ वाली निर्दलनं समुद्र तरणं, लंकापुरी दाहनम्। पश्चाद्रावण कुम्भकर्ण हननं, एतद्धि रामायणम्॥"
+    },
+    "chaupai": {
+      "english": "Victory to the compassionate and powerful Lord of the Raghu clan. Always protect your devotees. ॥ Victory to the son of Dasharatha, praised by the world. ॥ You are the King of Ayodhya, and you perfect everyone's tasks. ॥ You slew Tadaka and Subahu and redeemed Ahalya. ॥ You lifted the bow in King Janaka's assembly and won Mother Sita. ॥ You humbled Parashurama and brought peace to the hearts of the sages. ॥ You helped the boatman cross and cherished the love of Shabari. ॥",
+      "sanskrit": "श्री राम रामेति रामेति रमे रामे मनोरमे। सहस्रनाम तत्तुल्यं रामनाम वरानने॥",
+      "hindi": "जय रघुवीर समर्थ कृपाला। सदा करो भक्तन प्रतिपाला॥ जय दशरथ नन्दन जग वन्दन। जय जय जय रघुकुल भूषण॥॥ कोशलपुर के तुम हो राजा। तुम ही संवारे सबके काजा॥ ताड़का सुबाहु तुम मारे। गौतम तिय अहिल्या को तारे॥॥ जनक सभा में चाप चढ़ायो। सीता मइया को तुम पायो॥ परशुराम को गर्व मिटायो। मुनि सब का तुम हृदय जुड़ाया॥॥ केवट को तुम पार उतारा। शबरी के तुम प्रेम को धारा॥ दीन दयाल दया के सागर। भरत प्राण प्रिय ज्ञान उजागर॥॥"
+    },
+    "endingDoha": {
+      "hindi": "राम चालीसा जो पढ़े, मन में राम बसाय। लोक लोक में मान पा, भव सागर तर जाय॥",
+      "english": "Whoever recites the Ram Chalisa with Lord Rama in their heart will receive honor in every world and cross the ocean of rebirth.",
+      "sanskrit": "मङ्गलं कोशलेन्द्राय महनीयगुणाब्धये। चक्रवर्ति तनूजाय सार्वभौमाय मङ्गलम्॥"
+    },
+    "jaiKara": {
+      "english": "Victory to Lord Rama, the husband of Sita! Hail Lord Rama!",
+      "sanskrit": "ॐ रां रामाय नमः॥",
+      "hindi": "बोलो सियावर रामचंद्र की जय! जय श्री राम!"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1772045785,
+      "nanoseconds": 898000000
+    }
+  },
+  {
+    "id": "DFa55kbxekAaHYY4VQNQ",
+    "title": {
+      "english": "Shri Ganesh Chalisa",
+      "sanskrit": "श्रीगणेशचालीसा",
+      "hindi": "श्री गणेश चालीसा"
+    },
+    "startingDoha": {
+      "hindi": "जय गणपति सदगुण सदन, कविवर बदन कृपाल। विघ्र हरण मंगल करण, जय जय गिरिजालाल॥",
+      "english": "Victory to Ganapati, the abode of virtues and the compassionate one. Destroyer of obstacles and creator of auspiciousness, victory to the son of Parvati.",
+      "sanskrit": "जय गणपति सद्गुणसदन कविवरबदन कृपाल। विघ्नहरण मङ्गलकरण जय जय गिरिजालाल॥"
+    },
+    "chaupai": {
+      "hindi": "जय जय जय गणपति गणराजू। मंगल भरण करण शुभ काजू॥ जय गजबदन सदन सुखदाता। विश्व विनायक बुद्धि विधाता॥॥ वक्र तुण्ड शुचि शुण्ड सुहावन। तिलक त्रिपुण्ड भाल मन भावन॥ राजत मणि मुक्तन उर माला। स्वर्ण मुकुट शिर नयन विशाला॥॥ पुस्तक पाणि कुठार त्रिशूलं। मोदक भोग सुगन्धित फूलं॥ सुन्दर पीताम्बर तन साजित। चरण पादुका मुनि मन राजित॥॥ धनि शिव सुवन षडानन भ्राता। गौरी ललन विश्व विख्याता॥ ऋद्धि सिद्धि तव चंवर सुधारे। मूषक वाहन सोहत द्वारे॥॥",
+      "sanskrit": "जय जय जय गणपति गणराजू मंगल भरण करण शुभ काजू। जय गजबदन सदन सुखदाता विश्व विनायक बुद्धि विधाता॥",
+      "english": "Victory to the king of Ganas, who makes every task auspicious. Victory to the elephant-faced Lord, the giver of happiness and the creator of intellect. ॥ Your curved trunk is beautiful, and the Tilak on your forehead is enchanting. You wear a necklace of gems and a golden crown. ॥ You hold a book, an axe, and a trident; you love Modaks and fragrant flowers. ॥ You are the son of Shiva, the brother of Kartikeya, and the world-famous son of Gauri. ॥ Riddhi and Siddhi serve you, and your vehicle, the mouse, waits at the door. ॥"
+    },
+    "endingDoha": {
+      "hindi": "संवत पावक ऋषि गज बदत, भाद्रपद शुक्ल चतुर्थी। भारी चालीसा गणेश की, पूर्ण भई सुख पूर्ति॥",
+      "english": "Composed on the fourth day of the bright half of Bhadrapada, this Ganesh Chalisa is now complete, bringing fulfillment and joy.",
+      "sanskrit": "गजाननं भूतगणादिसेवितं कपित्थजम्बूफलसारभक्षितम्। उमासुतं शोकविनाशकारणं नमामि विघ्नेश्वरपादपङ्कजम्॥"
+    },
+    "jaiKara": {
+      "sanskrit": "ॐ गं गणपतये नमः।",
+      "english": "Hail Lord Ganesha! The embodiment of auspiciousness!",
+      "hindi": "गणपति बाप्पा मोरया! मंगल मूर्ति मोरया!"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1772045430,
+      "nanoseconds": 594000000
+    }
+  },
+  {
+    "id": "Ew0EzMEGHZtwUpchj7th",
+    "title": {
+      "sanskrit": "श्रीसरस्वतीचालीसा",
+      "english": "Shri Saraswati Chalisa",
+      "hindi": "श्री सरस्वती चालीसा"
+    },
+    "startingDoha": {
+      "hindi": "जनक जननि पद्मरज, निज मस्तक पर धरि। बन्दौं मातु सरस्वती, बुद्धि बल देहु भरि॥",
+      "sanskrit": "सरस्वति नमस्तुभ्यं वरदे कामरूपिणी। विद्यारम्भं करिष्यामि सिद्धिर्भवतु मे सदा॥",
+      "english": "Placing the lotus dust of my parents' feet upon my forehead, I pray to Mother Saraswati. Please fill me with the strength of intellect."
+    },
+    "chaupai": {
+      "hindi": "जय सरस्वती जयति वीणा धर। ज्ञान ध्यान पावन जग धर॥ श्वेत कमल पर तुम आसीना। हाथ वीणा पुस्तक प्रवीणा॥॥ हंस वाहिनी सुंदर सोहे। मुनि जन मानस तुम्हरे मोहे॥ चतुर्भुजी तुम जग की माता। विद्या सुख वैभव की दाता॥॥ जो कोई तुमको सुमिरन करई। ताके कष्ट मात सब हरई॥ बुद्धिहीन को ज्ञान सिखावै। मूक बदन वाणी को पावै॥॥ वेद पुराण नाम गुण गावैं। ऋषि मुनि सब ध्यान लगावैं॥ तुम ही हो सब ज्ञान की वाणी। तुम ही हो सब जग कल्याणी॥॥",
+      "english": "Victory to Saraswati, the holder of the Veena. You are the sacred foundation of knowledge and meditation. ॥ Seated upon a white lotus, you hold the Veena and the sacred book with mastery. ॥ Your vehicle, the swan, looks beautiful; you enchant the minds of even the greatest sages. ॥ As the four-armed mother of the world, you grant wisdom, happiness, and prosperity. ॥ You teach wisdom to the ignorant and grant speech to the mute. ॥ Sages and scriptures sing your glories and meditate upon you. ॥",
+      "sanskrit": "या कुन्देन्दुतुषारहारधवला या शुभ्रवस्त्रावृता। या वीणावरदण्डमण्डितकरा या श्वेतपद्मासना॥"
+    },
+    "endingDoha": {
+      "sanskrit": "पावका न: सरस्वती वाजेभिर्वाजिनीवती। यज्ञं वष्टु धियावसु:॥",
+      "english": "Whoever recites this Saraswati Chalisa with a focused heart, Mother Saraswati will always reside upon their tongue.",
+      "hindi": "सरस्वती चालीसा यह, जो जन पढ़ैं चित लाय। ताके कंठ सरस्वती, सदा विराजें आय॥"
+    },
+    "jaiKara": {
+      "hindi": "माँ सरस्वती की जय! विद्या दायिनी की जय!",
+      "english": "Victory to Mother Saraswati! Victory to the Giver of Knowledge!",
+      "sanskrit": "ॐ ऐं सरस्वत्यै नमः।"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1772045533,
+      "nanoseconds": 233000000
+    }
+  },
+  {
+    "id": "FqaERu1UZTKuazLXvo5d",
+    "title": {
+      "english": "Shri Sudarshan Kavach",
+      "sanskrit": "श्रीसुदर्शनकवचम्",
+      "hindi": "श्री सुदर्शन कवच"
+    },
+    "startingDoha": {
+      "english": "Now begins the Sudarshan Shield; salutations to the Lord. O Great Sudarshan Wheel, protect me from all directions.",
+      "sanskrit": "अस्य श्री सुदर्शन कवच स्तोत्र महामन्त्रस्य, भगवान् श्रीविष्णुर्ऋषिः। अनुष्टुप् छन्दः, श्रीसुदर्शनो देवता॥",
+      "hindi": "अथ सुदर्शन कवचस्य, नमो भगवते ह्नीं। सुदर्शन महाचक्र, रक्ष मां सर्वतो दिशः॥"
+    },
+    "chaupai": {
+      "hindi": "सुदर्शन महाज्वाल कोटिसूर्य समप्रभ। अज्ञानान्धस्य मे देव विष्णोर्मार्गं प्रदर्शय॥॥ सुदर्शन नमस्तेऽस्तु नमस्ते चक्र रूपिणे। नमस्ते वज्र रूपाय नमस्ते वज्र धारिणे॥॥ प्राच्यां रक्षतु मामग्निः आग्नेय्यां च महेश्वरः। दक्षिणस्यां यमः पातु नैरृत्यां च निशाचरः॥॥ वारुण्यां वरुणः पातु वायव्यां च समीरणः। कौबेर्यां तु कुबेरश्च ईशान्यमपि चेश्वरः॥॥ ऊर्ध्वं रक्षतु मे विष्णुः अधस्तात् पद्मलोचनः। एवं दशदिशो रक्षेत् सुदर्शन महायुधः॥॥",
+      "sanskrit": "सुदर्शन महाज्वाल कोटिसूर्यसमप्रभ। अज्ञानान्धस्य मे देव विष्णोर्मार्गं प्रदर्शय॥ नमस्तेऽस्तु सुदर्शनाय चक्रराजाय। नमस्ते वज्ररूपाय सहस्रारय ते नमः॥",
+      "english": "O Sudarshan, of great flame, brilliant as millions of suns. O Lord, show me the path of Vishnu, for I am blinded by ignorance.॥ Salutations to you, O Sudarshan; salutations to you in the form of the Wheel. Salutations to the Diamond-form; salutations to the wielder of the Thunderbolt.॥ May the fire protect me in the East, and Maheshwara in the South-East. May Yama protect in the South, and the Night-walker in the South-West.॥ May Varuna protect in the West, and the Wind-god in the North-West. May Kubera protect in the North, and Ishwara in the North-East.॥ May Vishnu protect me from above, and the Lotus-eyed Lord from below. Thus, let the great weapon Sudarshan protect all ten directions.॥"
+    },
+    "endingDoha": {
+      "hindi": "य इदं पठते नित्यं सुदर्शनं महत्तरम्। सर्वान् कामानवाप्नोति विष्णुलोकं स गच्छति॥",
+      "english": "He who recites this great Sudarshan shield daily attains all desires and eventually reaches the abode of Lord Vishnu.",
+      "sanskrit": "फलादिकां यः पठति नित्यं कवचमिदं शुभम्। सर्वपापविनिर्मुक्तो विष्णुसायुज्यमाप्नुयात्॥"
+    },
+    "jaiKara": {
+      "hindi": "जय श्री सुदर्शन चक्र धारी भगवान की जय!",
+      "sanskrit": "ॐ नमो भगवते महासुदर्शनाय हुं फट्।",
+      "english": "Victory to the Lord who wields the Sudarshan Chakra!"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1772045316,
+      "nanoseconds": 930000000
+    }
+  },
+  {
+    "id": "HKmQSt1j2aL14oo6xWRG",
+    "title": {
+      "sanskrit": "श्रीहनुमानचालीसा",
+      "english": "Hanuman Chalisa",
+      "hindi": "हनुमान चालीसा"
+    },
+    "startingDoha": {
+      "english": "Having cleansed the mirror of my mind with the dust of my Guru's lotus feet, I sing the pure glory of Lord Rama, which bestows the four fruits of life. Realizing my ignorance, I meditate upon you, O Son of the Wind! Grant me strength, wisdom, and knowledge, and remove my miseries.",
+      "sanskrit": "श्रीगुरुचरणसरोजरजसा निजमनोमुकुरं सुधाय। वर्णयामि रघुवरविमलयशं यो दायकः फलचतुष्टयम्॥ बुद्धिहीनं तनुं ज्ञात्वा स्मरामि पवनकुमारम्। बलं बुद्धिं विद्यां देहि मे हर क्लेशविकारम्॥",
+      "hindi": "श्रीगुरु चरन सरोज रज निज मनु मुकुरु सुधारि। बरनऊं रघुबर बिमल जसु जो दायकु फल चारि॥ बुद्धिहीन तनु जानिके सुमिरौं पवन-कुमार। बल बुधि बिद्या देहु मोहिं हरहु कलेस बिकार॥"
+    },
+    "chaupai": {
+      "sanskrit": "जय हनुमान ज्ञानगुणसागर। जय कपीश तिहुँलोक उजागर॥ रामदूत अतुलितबलधामा। अञ्जनिपुत्र पवनसुत नामा॥...",
+      "english": "Victory to Hanuman, ocean of wisdom and virtue! Victory to the Lord of Monkeys who illuminates the three worlds... [Truncated for brevity, but follows your format]",
+      "hindi": "जय हनुमान ज्ञान गुन सागर। जय कपीस तिहुं लोक उजागर॥ राम दूत अतुलित बल धामा। अंजनि-पुत्र पवनसुत नामा॥ महाबीर बिक्रम बजरंगी। कुमति निवार सुमति के संगी॥ कंचन बरन बिराज सुबेसा। कानन कुंडल कुंचित केसा॥ हाथ बज्र औ ध्वजा बिराजै। कांधे मूंज जनेऊ साजै॥ संकर सुवन केसरी नंदन। तेज प्रताप महा जग बंदन॥ बिद्यावान गुनी अति चातुर। राम काज करिबे को आतुर॥ प्रभु चरित्र सुनिबे को रसिया। राम लखन सीता मन बसिया॥ सूक्ष्म रूप धरि सियहिं दिखावा। बिकट रूप धरि लंक जरावा॥ भीम रूप धरि असुर संहारे। रामचंद्र के काज संवारे॥ लाय सजीवन लखन जियाये। श्रीरघुबीर हरषि उर लाये॥ रघुपति कीन्ही बहुत बड़ाई। तुम मम प्रिय भरतहि सम भाई॥ सहस बदन तुम्हरो यस गावैं। अस कहि श्रीपति कंठ लगावैं॥ सनकादिक ब्रह्मादि मुनीसा। नारद सारद सहित अहीसा॥ जम कुबेर दिगपाल जहां ते। कबि कोबिद कहि सके कहां ते॥ तुम उपकार सुग्रीवहिं कीन्हा। राम मिलाय राज पद दीन्हा॥ तुम्हरो मंत्र बिभीषन माना। लंकेस्वर भए सब जग जाना॥ जुग सहस्र जोजन पर भानू। लील्यो ताहि मधुर फल जानू॥ प्रभु मुद्रिका मेलि मुख माहीं। जलधि लांघि गये अचरज नाहीं॥ दुर्गम काज जगत के जेते। सुगम अनुग्रह तुम्हरे तेते॥ राम दुआरे तुम रखवारे। होत न आग्या बिनु पैसारे॥ सब सुख लहै तुम्हारी सरना। तुम रक्षक काहू को डर ना॥ आपन तेज सम्हारो आपै। तीनों लोक हांक तें कांपै॥ भूत पिसाच निकट नहिं आवै। महाबीर जब नाम सुनावै॥ नासै रोग हरै सब पीरा। जपत निरंतर हनुमत बीरा॥ संकट तें हनुमान छुड़ावै। मन क्रम बचन ध्यान जो लावै॥ सब पर राम तपस्वी राजा। तिन के काज सकल तुम साजा॥ और मनोरथ जो कोई लावै। सोइ अमित जीवन फल पावै॥ चारों जुग परताप तुम्हारा। है परसिद्ध जगत उजियारा॥ साधु संत के तुम रखवारे। असुर निकंदन राम दुलारे॥ अष्ट सिद्धि नौ निधि के दाता। अस बर दीन जानकी माता॥ राम रसायन तुम्हरे पासा। सदा रहो रघुपति के दासा॥ तुम्हरे भजन राम को पावै। जनम जनम के दुख बिसरावै॥ अंत काल रघुबर पुर जाई। जहां जन्म हरि-भक्त कहाई॥ और देवता चित्त न धरई। हनुमत सेइ सर्ब सुख करई॥ संकट कटै मिटै सब पीरा। जो सुमिरै हनुमत बलबीरा॥ जै जै जै हनुमान गोसाईं। कृपा करहु गुरुदेव की नाईं॥ जो सत बार पाठ कर कोई। छूटहि बंदि महा सुख होई॥ जो यह पढ़ै हनुमान चालीसा। होय सिद्धि साखी गौरीसा॥ तुलसीदास सदा हरि चेरा। कीजै नाथ हृदय मंह डेरा॥"
+    },
+    "endingDoha": {
+      "hindi": "पवनतनय संकट हरन, मंगल मूरति रूप। राम लखन सीता सहित, हृदय बसहु सुर भूप॥",
+      "english": "O Son of the Wind, dispeller of misfortunes, the very embodiment of blessings. Live in my heart along with Sri Rama, Lakshmana, and Sita.",
+      "sanskrit": "पवनतनय सङ्कटहरण मङ्गलमूरति रूप। राम लखन सीता सहित हृदय बसहु सुर भूप॥"
+    },
+    "jaiKara": {
+      "sanskrit": "जय श्री राम! जय श्री हनुमान!",
+      "english": "Hail Lord Rama! Hail Hanuman, Son of the Wind!",
+      "hindi": "बोलो सियावर रामचंद्र की जय! पवनसुत हनुमान की जय!"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1772045166,
+      "nanoseconds": 546000000
+    }
+  },
+  {
+    "id": "Pp4ilvaq3WBBy8RJi4fs",
+    "title": {
+      "hindi": "श्री सूर्य चालीसा",
+      "english": "Shri Surya Chalisa",
+      "sanskrit": "श्रीसूर्यचालीसा"
+    },
+    "startingDoha": {
+      "hindi": "कनक बदन कुण्डल मकर, मुक्ता माला अङ्ग। पद्मासन स्थित ध्याइये, शङ्ख चक्र के सङ्ग॥",
+      "sanskrit": "ॐ भुर्भुव: स्व: तत्सवितुर्वरेण्यं भर्गो देवस्य धीमहि धियो यो न: प्रचोदयात्॥",
+      "english": "Meditate on the golden-bodied Lord, wearing crocodile-shaped earrings and a pearl necklace, seated in a lotus posture with a conch and a discus."
+    },
+    "chaupai": {
+      "english": "Victory to the Sun, the creator of the day. With a thousand rays and seven horses, You destroy all darkness. ॥ You are the son of Kashyapa and Aditi, the apple of their eyes. ॥ Your form is as brilliant as fire, and your glory is supreme among kings. ॥ Whoever recites your twelve names is freed from twelve types of ailments. ॥ You leave the darkness to create light, giving immense happiness to the Gods and humans alike. ॥",
+      "sanskrit": "नमो धर्मनिधानाय नम: सुकृतसाक्षिणे। नम: प्रत्यक्षदेवाय भास्कराय नमो नम:॥",
+      "hindi": "जय सविता जय जयति दिवाकर। सहस्रांशु सप्ताश्व तिमिरहर॥ भानु पतङ्ग मरीचि भास्कर। सविता हंस सुपर्ण विभाकर॥॥ विवस्वान आदित्य विकर्तन। मार्तण्ड प्रभु अमित प्रकाशन॥ धनी सुवन कश्यप के प्यारे। अदिति कुमार नयन के तारे॥॥ अर्क अग्नि सदृश तव रूपा। विभ्राजत महिमा अति भूपा॥ द्वादश नाम लेत जो कोई। बारह व्याधि तजे पुनि सोई॥॥ अन्धकार तजि प्रकाश कीन्हा। देव जनन को सुख अति दीन्हा॥ तुम ही शक्ति तुम ही हो दाता। अखिल विश्व के तुम ही विधाता॥॥"
+    },
+    "endingDoha": {
+      "english": "Men and women who sing this Surya Chalisa with love will be freed from terrible suffering and cross the ocean of worldly existence.",
+      "sanskrit": "आदित्यस्य नमस्कारं ये कुर्वन्ति दिने दिने। जन्मान्तरसहस्रेषु दारिद्र्यं नोपजायते॥",
+      "hindi": "भानु चालीसा प्रेम युत, गावैं जे नर नारि। घोर कष्ट सों छूटिकै, उतरें भव निधि पारि॥"
+    },
+    "jaiKara": {
+      "hindi": "सूर्य देव की जय! जय भास्कर!",
+      "sanskrit": "ॐ घृणि सूर्याय नमः॥",
+      "english": "Victory to the Sun God! Victory to the Light-Bringer!"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1772045772,
+      "nanoseconds": 850000000
+    }
+  },
+  {
+    "id": "czqEYOhR6Z0mv6fKTXCJ",
+    "title": {
+      "sanskrit": "श्रीशनैश्चरचालीसा",
+      "english": "Shri Shani Chalisa",
+      "hindi": "श्री शनि चालीसा"
+    },
+    "startingDoha": {
+      "hindi": "जय गणेश गिरिजा सुवन, मंगल करण कृपाल। दीनन के दुख दूर करि, कीजै नाथ निहाल॥ जयति जयति शनिदेव प्रभु, सुनहु विनय महाराज। करहु कृपा हे रवि तनय, राखहु जन की लाज॥",
+      "sanskrit": "निलाञ्जनसमाभासं रविपुत्रं यमाग्रजम्। छायामार्तण्डसम्भूतं तं नमामि शनैश्चरम्॥",
+      "english": "Victory to Ganesha, the son of Parvati, the compassionate doer of good. Remove the sorrows of the humble, O Lord. Victory to Lord Shani; hear my prayer, O Great King. Be merciful, O son of the Sun, and protect my honor."
+    },
+    "chaupai": {
+      "hindi": "जयति जयति शनिदेव दयाला। करत सदा भक्तन प्रतिपाला॥ चारि भुजा, तनु श्याम विराजै। माथे रतन मुकुट छवि छाजै॥॥ परम विशाल रूप अति भारी। कोपदारि जेहि होइ हकारी॥ लोह गदा दक्षिण कर धारी। उत्तर कर वर मुद्रा प्यारी॥॥ वाहन गृध्र तुरंग कुरंगा। मदगज राजु सोह सर्वांगा॥ देव दनुज ऋषि मुनि नर नारी। विश्वनाथ सब तव अधिकारी॥॥ पिङ्गल, कृष्ण, सुरी, यम, मन्द। शौरी, शनैश्चर, सब सुख कन्द॥ ये सब नाम जपें जो नर ही। शनि दुःख ते नहिं कभी डर ही॥॥",
+      "english": "Victory to the merciful Lord Shani, who always protects his devotees. ॥ You have four arms and a dark complexion, wearing a gem-studded crown. ॥ Your form is massive and powerful; one who faces your wrath trembles. ॥ You hold an iron mace in your right hand, while your left hand is in a blessing posture. ॥ Whether it be Gods, demons, sages, or humans, all are subject to your justice. ॥ Those who chant your various names—Pingala, Krishna, Sauri, Shani—never fear suffering. ॥",
+      "sanskrit": "जयति जयति शनिदेव दयाला करत सदा भक्तन प्रतिपाला। चारि भुजा तनु श्याम विराजै माथे रतन मुकुट छवि छाजै॥"
+    },
+    "endingDoha": {
+      "sanskrit": "शमिदं स्तोत्रं यः पठेच्छ्रद्धयान्वितः। तस्य पीडा शनैश्चरकृतं न भविष्यति कदाचन॥",
+      "english": "The devotee who prepares and recites this prayer to Lord Shani for forty days will surely cross the ocean of existence.",
+      "hindi": "पाठ शनैश्चर देव को, की हों ‘भक्त’ तैयार। करत पाठ चालीस दिन, हो भवसागर पार॥"
+    },
+    "jaiKara": {
+      "hindi": "बोलो शनिदेव महाराज की जय!",
+      "sanskrit": "ॐ शं शनैश्चराय नमः।",
+      "english": "Victory to Lord Shanidev!"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1772045519,
+      "nanoseconds": 964000000
+    }
+  },
+  {
+    "id": "eW67St0NWEasITgEMvWP",
+    "title": {
+      "sanskrit": "श्रीदुर्गाचालीसा",
+      "english": "Shri Durga Chalisa",
+      "hindi": "श्री दुर्गा चालीसा"
+    },
+    "startingDoha": {
+      "hindi": "नमो नमो दुर्गे सुख करनी। नमो नमो अम्बे दुःख हरनी॥ निरंकार है ज्योति तुम्हारी। तिहूँ लोक फैली उजियारी॥",
+      "english": "I bow to You, O Durga, the bestower of happiness. I bow to You, O Mother Ambe, the remover of all miseries. Your light is formless and infinite, and its radiance spreads across all three worlds.",
+      "sanskrit": "नमो नमो दुर्गे सुखकरणि नमो नमोऽम्बे दु:खहरणि। निरंकार है ज्योति तुम्हारी तिहुं लोक फैली उजियारी॥"
+    },
+    "chaupai": {
+      "english": "Your face is grand with the moon on your forehead; your eyes are red and your frown is fearsome. ॥ You are the power that creates and dissolves the world; as Annapurna, you feed all living beings. ॥ During the dissolution, you destroy everything; you are Gauri, the beloved of Shiva. ॥ You took the form of Saraswati to grant wisdom to the sages; you appeared as Narasimha to save Prahlad. ॥ You reside in the ocean of milk as Lakshmi; your glory at Hinglaj is beyond description. ॥ You are the ten Mahavidyas—Matangi, Bhuvaneshwari, and Bagalamukhi. ॥ Seated on your lion, with a sword and shield in hand, even Time fears you. ॥",
+      "sanskrit": "शशिललाट मुख महाविशाला नेत्र लाल भृकुटि विकराला। रूप मातु को अधिक सुहावे दरश करत जन अति सुख पावे॥ तुम संसार शक्ति लय कीन्हा पालन हेतु अन्न धन दीन्हा॥",
+      "hindi": "शशि ललाट मुख महाविशाला। नेत्र लाल भृकुटी विकराला॥ रूप मातु को अधिक सुहावे। दरश करत जन अति सुख पावे॥॥ तुम संसार शक्ति लय कीन्हा। पालन हेतु अन्न धन दीन्हा॥ अन्नपूर्णा हुई जग पाला। तुम ही आदि सुन्दरी बाला॥॥ प्रलयकाल सब नाशन हारी। तुम गौरी शिव शंकर प्यारी॥ शिव योगी तुम्हरे गुण गावें। ब्रह्मा विष्णु तुम्हें नित ध्यावें॥॥ रूप सरस्वती को तुम धारा। दे सुबुद्धि ऋषि मुनिन उबारा॥ धरयो रूप नरसिंह को अम्बा। परगट भई फाड़कर खम्बा॥॥ रक्षा करि प्रह्लाद बचायो। हिरण्याक्ष को स्वर्ग पठायो॥ लक्ष्मी रूप धरो जग माहीं। श्री नारायण हिंगु समाहीं॥॥ क्षीरसिन्धु में करत विलासा। दयासिन्धु दीजै मन आसा॥ हिंगलाज में तुम्हीं भवानी। महिमा अमित न जात बखानी॥॥ मातंगी अरु धूमावति माता। भुवनेश्वरी बगला सुखदाता॥ श्री भैरव तारा जग तारिणी। छिन्नभाल भव दुःख निवारिणी॥॥ केहरि वाहन सोह भवानी। लांगुर वीर चलत अगवानी॥ कर में खप्पर खड्ग विराजै। जाको देख काल डर भाजै॥॥ सोहे अस्त्र और त्रिशूला। जाते उठत शत्रु हिय शूला॥ नगरकोट में तुम्हीं विराजत। तिहुँ लोक में डंका बाजत॥"
+    },
+    "endingDoha": {
+      "english": "I have come to your shelter and sing your glories; Victory, victory, victory to the Mother of the Universe.",
+      "sanskrit": "शरणागतं पाहि नित्यं देवी विश्वार्तिहारिणी। जय जय जय जगदम्ब भवानी॥",
+      "hindi": "शरणागत हुई कीर्ति बखानी। जय जय जय जगदम्ब भवानी॥"
+    },
+    "jaiKara": {
+      "hindi": "बोलो सांचे दरबार की जय! जय माता दी!",
+      "english": "Hail the True Court of the Mother! Victory to the Mother!",
+      "sanskrit": "जयन्ती मङ्गला काली भद्रकाली कपालिनी। दुर्गा क्षमा शिवा धात्री स्वाहा स्वधा नमोऽस्तु ते॥"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1772045353,
+      "nanoseconds": 641000000
+    }
+  },
+  {
+    "id": "rDX4Ylmz2akqDwuQxYDb",
+    "title": {
+      "hindi": "श्री कृष्ण चालीसा",
+      "english": "Shri Krishna Chalisa",
+      "sanskrit": "श्रीकृष्णचालीसा"
+    },
+    "startingDoha": {
+      "hindi": "बंशी शोभित कर मधुर, नील जलद तन श्याम। अरुन अधर जनु बिम्बा फल, नयन कमल अभिराम॥",
+      "english": "With a sweet flute gracing His hands and a dark body like a blue cloud, His red lips are like the Bimba fruit and His eyes are like lovely lotuses.",
+      "sanskrit": "कस्तूरीतिलकं ललाटपटले वक्षःस्थले कौस्तुभं नासाग्रे वरमौक्तिकं करतले वेणुं करे कङ्कणम्।"
+    },
+    "chaupai": {
+      "sanskrit": "जय यदुनन्दन जय जगवन्दन जय वसुदेव देवकी नन्दन। जय यशोदा सुत नन्द दुलारे जय चाणूर मुष्टिक मारे॥",
+      "english": "Victory to the son of the Yadu dynasty, praised by the world. Victory to the son of Vasudeva and Devaki. ॥ Victory to the beloved of Yashoda and Nanda; victory to the slayer of demons Chanura and Mushtika. ॥ Victory to the dancer, the butter-thief, and the cowherd. ॥ You wear a peacock crown and yellow silk, enchanting the hearts of sages. ॥ You subdued the serpent Kaliya and made the Gods fearless. You lifted Mount Govardhan on your finger and destroyed the demon Bakasura. ॥",
+      "hindi": "जय यदुनन्दन जय जगवन्दन। जय वसुदेव देवकी नन्दन॥ जय यशुदा सुत नन्द दुलारे। जय चाणूर मुष्टिक मारे॥॥ जय नटवर नागर नन्दलाला। जय जय माखन चोर ग्वाला॥ बंशी धर प्रभु मुरली धारी। जय गौपालन कुंज विहारी॥॥ मोर मुकुट पीताम्बर सोहै। देखि छवि मुनि मन मोहै॥ गले बैजन्ती माल बिराजै। मुरली अधर मधुर सुर बाजै॥॥ कालिय नाग नाथ तुम कीन्हा। दैवन को निर्भय कर दीन्हा॥ गिरि गोवर्धन कर पर धारो। असुर बकासुर सब तुम मारो॥॥"
+    },
+    "endingDoha": {
+      "hindi": "यह चालीसा कृष्ण की, पाठ करै जो कोय। अष्ट सिद्धि नौ निधि फल, प्राप्ति उसे ही होय॥",
+      "english": "Whoever recites this Chalisa of Krishna will attain the eight psychic powers and the nine treasures of life.",
+      "sanskrit": "मूकं करोति वाचालं पगुं लङ्घयते गिरिम्। यत्कृपा तमहं वन्दे परमानन्द माधवम्॥"
+    },
+    "jaiKara": {
+      "sanskrit": "ॐ नमो भगवते वासुदेवाय।",
+      "english": "Victory to the beloved Krishna! Hail the Lord of the Universe!",
+      "hindi": "हाथी घोड़ा पालकी, जय कन्हैया लाल की! श्री कृष्ण कन्हैया लाल की जय!"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1772045549,
+      "nanoseconds": 349000000
+    }
+  },
+  {
+    "id": "tFwby2MWwyrb2o9NHtjS",
+    "title": {
+      "hindi": "श्री शिव चालीसा",
+      "english": "Shri Shiv Chalisa",
+      "sanskrit": "श्रीशिवचालीसा"
+    },
+    "startingDoha": {
+      "hindi": "जय गणेश गिरिजा सुवन, मंगल मूल सुजान। कहत अयोध्यादास तुम, देहु अभय वरदान॥",
+      "english": "Victory to Lord Ganesha, the son of Parvati, the source of all auspiciousness. Ayodhyadas asks for your blessing of fearlessness.",
+      "sanskrit": "जय गणेश गिरिजासुवन मङ्गलमूल सुजान। कहत अयोध्यादास तुम देहु अभय वरदान॥"
+    },
+    "chaupai": {
+      "english": "Victory to the husband of Parvati, the protector of the humble. The crescent moon shines on your forehead, and snakes serve as your earrings. ॥ With a fair complexion, the Ganges flows from your hair; you wear a garland of skulls and ash on your body. ॥ The tiger skin suits you beautifully, enchanting both Nagas and Sages. ॥ Parvati sits on your left, looking magnificent. With a trident in hand, you destroy all enemies. ॥ Just as lotuses bloom in the ocean, Nandi and Ganesha look glorious by your side. ॥ Whenever the Gods were in trouble, you removed their sorrows instantly. ॥",
+      "sanskrit": "जय गिरजापति दीनदयाला सदा करत सन्तन प्रतिपाला। भाल चन्द्र सोहत नीके कानन कुण्डल नागफणी के॥",
+      "hindi": "जय गिरजा पति दीन दयाला। सदा करत सन्तन प्रतिपाला॥ भाल चन्द्र सोहत नीके। कानन कुण्डल नाग फणी के॥॥ अंग गौर शिर गंग बहाये। मुण्डमाल तन क्षार लगाये॥ वस्त्र खाल बाघम्बर सोहे। छवि को देख नाग मुनि मोहे॥॥ मैना मातु की ह्वै दुलारी। बाम अंग सोहत छवि न्यारी॥ कर त्रिशूल सोहत छवि भारी। करत सदा शत्रुन क्षयकारी॥॥ नन्दि गणेश सोहैं तहँ कैसे। सागर मध्य कमल हैं जैसे॥ कार्तिक श्याम और गणराऊ। या छवि को कहि जात न काऊ॥॥ देवन जबहीं जाय पुकारा। तब ही दुख प्रभु आप निवारा॥ किया उपद्रव तारक भारी। देवन सब मिलि तुमहिं जुहारी॥॥ तुरत षडानन आप पठायो। लवनिमेष महँ मारि गिरायो॥ आप जलन्धर असुर संहारा। सुयश तुम्हार विदित संसारा॥॥"
+    },
+    "endingDoha": {
+      "hindi": "नित्त नेम कर प्रातः ही, पाठ करै चालीसा। तुम मेरी मनोकामना, पूर्ण करो जगदीश॥",
+      "english": "He who recites this Chalisa every morning with devotion, O Lord of the Universe, please fulfill all his heart's desires.",
+      "sanskrit": "नित्त नेम कर प्रातः ही पाठ करै चालीसा। तुम मेरी मनोकामना पूर्ण करो जगदीश॥"
+    },
+    "jaiKara": {
+      "english": "Hail the Great God! Salutations to Lord Shiva!",
+      "sanskrit": "कर्पूरगौरं करुणावतारं संसारसारं भुजगेन्द्रहारम्। सदावसन्तं हृदयारविन्दे भवं भवानीसहितं नमामि॥",
+      "hindi": "हर हर महादेव! ॐ नमः शिवाय!"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1772045395,
+      "nanoseconds": 895000000
+    }
+  },
+  {
+    "id": "w7ZtDGFEwpr9FWonPES1",
+    "title": {
+      "english": "Shri Bhairav Chalisa",
+      "sanskrit": "श्रीभैरवचालीसा",
+      "hindi": "श्री भैरव चालीसा"
+    },
+    "startingDoha": {
+      "hindi": "श्री गणपति गुरु गौरी पद, प्रेम सहित धरि माथ। चालीसा भैरव करूँ, कृपा करहु जगन्नाथ॥",
+      "sanskrit": "तीक्ष्णदंष्ट्र महाकाय कल्पान्तदहनोपम। भैरवाय नमस्तुभ्यं अनुज्ञां दातुमर्हसि॥",
+      "english": "I bow my head with love at the feet of Ganesha, the Guru, and Gauri. I begin the Bhairav Chalisa; O Lord of the Universe, please be merciful."
+    },
+    "chaupai": {
+      "hindi": "जय जय भैरव बाबा देवा। सफल करहु तुम सबकी सेवा॥ जय जय काली के लाला। जय जय काशी के कुतवाला॥॥ नग्न स्वरूप हाथ डमरू। शिव के गण अति तुम प्रिय बरू॥ लटपट जटा मुकुट शिर सोहै। देखि स्वरूप मुनि मन मोहै॥॥ कटि करधनी घुँघरू बाजे। अंग विभूति बहुत ही साजे॥ काला कुत्ता वाहन प्यारा। सब ही जग में तुम उजियारा॥॥ तुम ही शिव के रूप अनूपा। भक्तन के हित धरेउ स्वरूपा॥ जो कोई तुमको सुमिरन करई। ताके कष्ट मात सब हरई॥॥",
+      "sanskrit": "जय जय भैरव बाबा देवा सफल करहु तुम सबकी सेवा। जय जय काली के लाला जय जय काशी के कुतवाला॥",
+      "english": "Victory to Lord Bhairav; please make everyone's service successful. Victory to the son of Kali and the protector of Kashi. ॥ Naked in form with a Damru in hand, you are the beloved attendant of Shiva. ॥ With matted hair and a crown, your appearance enchants the minds of sages. ॥ The bells on your waist-belt chime, and ash is smeared on your body. ॥ The black dog is your beloved vehicle, and you illuminate the entire world. ॥"
+    },
+    "endingDoha": {
+      "hindi": "भैरव चालीसा जो पढ़े, प्रेम सहित मन लाय। दुःख दरिद्र पातक मिटे, सकल सुख संपति पाय॥",
+      "english": "Whoever reads the Bhairav Chalisa with love and focus will find their sorrows, poverty, and sins erased, attaining all happiness and wealth.",
+      "sanskrit": "ॐ ह्रीं बटुकाय आपदुद्धारणाय कुरु कुरु बटुकाय ह्रीं॥"
+    },
+    "jaiKara": {
+      "english": "Victory to the Protector of Kashi! Victory to Lord Bhairav Nath!",
+      "sanskrit": "ॐ भं भैरवाय नमः॥",
+      "hindi": "काशी के कोतवाल की जय! जय भैरव नाथ!"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1772045823,
+      "nanoseconds": 459000000
+    }
+  }
+]

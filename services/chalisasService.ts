@@ -11,7 +11,7 @@
 
 import { db } from "../firebase";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-
+import ChalisaData from "./Chalisas.json";
 // ─────────────────────────────────────────────
 // TYPE DEFINITIONS
 // ─────────────────────────────────────────────
@@ -46,6 +46,11 @@ class ChalisasService {
     Array<{ id: string; title: string; deity: string }>
   > {
     try {
+      const isServerOpen = Boolean(process.env.EXPO_USE_SERVER);
+      if (!isServerOpen) {
+        return ChalisaData;
+      }
+
       // ✅ CORRECT - Extracts and returns the data
       const snapshot = await getDocs(collection(db, "chalisas"));
       const chalisas = snapshot.docs.map((docSnap) => ({

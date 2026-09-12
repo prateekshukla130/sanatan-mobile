@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Sanatan Bhakti",
+    "name": "Sanatan Dharma",
     "slug": "sanatan-dharma",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -52,12 +52,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/splash-2.png",
+          "imageWidth": 220,
           "resizeMode": "contain",
-          "backgroundColor": "#2C0B0E",
-          "dark": {
-            "backgroundColor": "#1A0608"
-          }
+          "backgroundColor": "#4A0E0E"
         }
       ],
       [
@@ -65,7 +63,15 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow this app to access your location for accurate Panchang."
         }
-      ]
+      ],
+      "@react-native-community/datetimepicker",
+      "expo-font",
+      "expo-image",
+      "expo-sharing",
+      "expo-status-bar",
+      "expo-web-browser",
+      "expo-asset",
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true

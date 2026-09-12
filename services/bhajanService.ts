@@ -1,6 +1,6 @@
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
-
+import BhajanData from "./Bhajan.json";
 export interface Bhajan {
   id: string;
   title: string;
@@ -14,6 +14,11 @@ let _cache: Bhajan[] = [];
 let _initialized = false;
 
 async function fetchFromFirebase(): Promise<Bhajan[]> {
+  const isServerOpen = Boolean(process.env.EXPO_USE_SERVER);
+  if (!isServerOpen) {
+    _cache = BhajanData;
+    return BhajanData;
+  }
   const snap = await getDocs(collection(db, "bhajans"));
   if (snap.empty) return [];
 
@@ -61,11 +66,13 @@ export const bhajanService = {
   },
 
   getBhajansByDeity(deity: string): Bhajan[] {
-    return _cache.filter((b) => b.deity.toLowerCase() === deity.toLowerCase());
+    return _cache.filter(
+      (b) => b?.deity?.toLowerCase() === deity?.toLowerCase(),
+    );
   },
 
   getBhajanById(id: string): Bhajan | undefined {
-    return _cache.find((b) => b.id === id);
+    return _cache?.find((b) => b?.id === id);
   },
 
   get isLoaded(): boolean {

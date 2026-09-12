@@ -50,6 +50,14 @@ const DEV = {
   linkedin: "https://www.linkedin.com/in/prateek-shukla-b61050215/",
 };
 
+const DEV_2 = {
+  name: "Vasav Prashar",
+  nameHi: "वासव प्रशार",
+  role: "Full Stack Developer",
+  email: "vasv.420@gmail.com",
+  linkedin: "https://www.linkedin.com/in/prateek-shukla-b61050215/",
+};
+
 async function openLink(url: string) {
   try {
     const supported = await Linking.canOpenURL(url);
