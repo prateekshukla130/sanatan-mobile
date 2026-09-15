@@ -6,7 +6,7 @@
  * - Tab 2: चालीसा (Chalisas - new single scroll detail view)
  */
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import {
   View,
   Text,
@@ -20,12 +20,24 @@ import {
   Animated as RNAnimated,
 } from "react-native";
 import { GradientBackground } from "../../components/GradientBackground";
-import { colors, spacing, typography } from "../../theme";
+import { useTheme, ThemeColors, spacing, typography } from "../../theme";
 import { gitaService, Chapter, Verse } from "../../services/gitaService";
 import { chalisasService, Chalisa } from "../../services/chalisasService";
 import { Ionicons } from "@expo/vector-icons";
 
 const { width: SW, height: SH } = Dimensions.get("window");
+
+// ─────────────────────────────────────────────
+// SHARED THEME-AWARE STYLES
+// ─────────────────────────────────────────────
+function useScripturesStyles() {
+  const { colors, spacing, typography } = useTheme();
+  const styles = useMemo(
+    () => makeStyles(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  return { colors, spacing, typography, styles };
+}
 
 // ─────────────────────────────────────────────
 // CONSTANTS
@@ -163,6 +175,7 @@ const ChapterCard = React.memo(
     index: number;
     onPress: () => void;
   }) => {
+    const { styles } = useScripturesStyles();
     const a = accent(item.number);
     const s = symbol(item.number);
     const scale = useRef(new RNAnimated.Value(1)).current;
@@ -184,42 +197,42 @@ const ChapterCard = React.memo(
       <FadeIn delay={index * 35}>
         <RNAnimated.View style={{ transform: [{ scale }] }}>
           <TouchableOpacity
-            style={[st.chCard, { borderLeftColor: a }]}
+            style={[styles.chCard, { borderLeftColor: a }]}
             onPress={onPress}
             onPressIn={onPressIn}
             onPressOut={onPressOut}
             activeOpacity={1}
           >
-            <Text style={[st.chWatermark, { color: a }]}>
+            <Text style={[styles.chWatermark, { color: a }]}>
               {toRoman(item.number)}
             </Text>
-            <View style={st.chTop}>
+            <View style={styles.chTop}>
               <View
                 style={[
-                  st.chCircle,
+                  styles.chCircle,
                   { backgroundColor: a + "22", borderColor: a + "55" },
                 ]}
               >
-                <Text style={[st.chCircleNum, { color: a }]}>
+                <Text style={[styles.chCircleNum, { color: a }]}>
                   {item.number}
                 </Text>
               </View>
-              <View style={st.chBadges}>
+              <View style={styles.chBadges}>
                 <View
                   style={[
-                    st.badge,
+                    styles.badge,
                     { backgroundColor: a + "18", borderColor: a + "40" },
                   ]}
                 >
                   <Text style={{ fontSize: 11 }}>{s}</Text>
-                  <Text style={[st.badgeTxt, { color: a }]}>
+                  <Text style={[styles.badgeTxt, { color: a }]}>
                     {item.verses} श्लोक
                   </Text>
                 </View>
               </View>
             </View>
-            <Text style={st.chSanskrit}>{item.name}</Text>
-            <Text style={st.chMeaning}>{item.meaning}</Text>
+            <Text style={styles.chSanskrit}>{item.name}</Text>
+            <Text style={styles.chMeaning}>{item.meaning}</Text>
           </TouchableOpacity>
         </RNAnimated.View>
       </FadeIn>
@@ -241,6 +254,7 @@ const ChalisaCard = React.memo(
     index: number;
     onPress: () => void;
   }) => {
+    const { styles } = useScripturesStyles();
     const scale = useRef(new RNAnimated.Value(1)).current;
 
     const onPressIn = () =>
@@ -260,16 +274,16 @@ const ChalisaCard = React.memo(
       <FadeIn delay={index * 35}>
         <RNAnimated.View style={{ transform: [{ scale }] }}>
           <TouchableOpacity
-            style={[st.chCard, { borderLeftColor: CHALISA_ACCENT }]}
+            style={[styles.chCard, { borderLeftColor: CHALISA_ACCENT }]}
             onPress={onPress}
             onPressIn={onPressIn}
             onPressOut={onPressOut}
             activeOpacity={1}
           >
-            <View style={st.chTop}>
+            <View style={styles.chTop}>
               <View
                 style={[
-                  st.chCircle,
+                  styles.chCircle,
                   {
                     backgroundColor: CHALISA_ACCENT + "22",
                     borderColor: CHALISA_ACCENT + "55",
@@ -278,24 +292,24 @@ const ChalisaCard = React.memo(
               >
                 <Text style={{ fontSize: 20 }}>🙏</Text>
               </View>
-              <View style={st.chBadges}>
+              <View style={styles.chBadges}>
                 <View
                   style={[
-                    st.badge,
+                    styles.badge,
                     {
                       backgroundColor: CHALISA_ACCENT + "18",
                       borderColor: CHALISA_ACCENT + "40",
                     },
                   ]}
                 >
-                  <Text style={[st.badgeTxt, { color: CHALISA_ACCENT }]}>
+                  <Text style={[styles.badgeTxt, { color: CHALISA_ACCENT }]}>
                     चालीसा
                   </Text>
                 </View>
               </View>
             </View>
-            <Text style={st.chSanskrit}>{getText(item.title, "hindi")}</Text>
-            <Text style={st.chMeaning}>भक्ति ग्रंथ</Text>
+            <Text style={styles.chSanskrit}>{getText(item.title, "hindi")}</Text>
+            <Text style={styles.chMeaning}>भक्ति ग्रंथ</Text>
           </TouchableOpacity>
         </RNAnimated.View>
       </FadeIn>
@@ -308,21 +322,23 @@ const ChalisaCard = React.memo(
 // ─────────────────────────────────────────────
 
 const VerseCard = React.memo(
-  ({ item, a, onPress }: { item: Verse; a: string; onPress: () => void }) => (
+  ({ item, a, onPress }: { item: Verse; a: string; onPress: () => void }) => {
+    const { styles } = useScripturesStyles();
+    return (
     <TouchableOpacity
-      style={[st.vCard, { borderTopColor: a + "55" }]}
+      style={[styles.vCard, { borderTopColor: a + "55" }]}
       onPress={onPress}
       activeOpacity={0.75}
     >
       <View
-        style={[st.vPill, { backgroundColor: a + "20", borderColor: a + "55" }]}
+        style={[styles.vPill, { backgroundColor: a + "20", borderColor: a + "55" }]}
       >
-        <Text style={[st.vPillTxt, { color: a }]}>श्लोक {item.verse}</Text>
+        <Text style={[styles.vPillTxt, { color: a }]}>श्लोक {item.verse}</Text>
       </View>
-      <Text style={st.vSanskrit} numberOfLines={2}>
+      <Text style={styles.vSanskrit} numberOfLines={2}>
         {item.sanskrit}
       </Text>
-      <Text style={st.vTransl} numberOfLines={2}>
+      <Text style={styles.vTransl} numberOfLines={2}>
         {item.translation}
       </Text>
       <View
@@ -333,11 +349,12 @@ const VerseCard = React.memo(
           marginTop: spacing.xs,
         }}
       >
-        <Text style={[st.vMore, { color: a }]}>Read more</Text>
+        <Text style={[styles.vMore, { color: a }]}>Read more</Text>
         <Ionicons name="chevron-forward" size={11} color={a} />
       </View>
     </TouchableOpacity>
-  ),
+    );
+  },
 );
 
 // ─────────────────────────────────────────────
@@ -345,6 +362,7 @@ const VerseCard = React.memo(
 // ─────────────────────────────────────────────
 
 export default function ScripturesScreen() {
+  const { colors, styles } = useScripturesStyles();
   const [tab, setTab] = useState<"gita" | "chalisas">("gita");
 
   // GITA STATE
@@ -401,21 +419,21 @@ export default function ScripturesScreen() {
     if (!selectedChapter) {
       return (
         <GradientBackground>
-          <View style={st.root}>
+          <View style={styles.root}>
             {/* Header */}
-            <View style={st.hdr}>
-              <Text style={st.hdrOm}>ॐ</Text>
+            <View style={styles.hdr}>
+              <Text style={styles.hdrOm}>ॐ</Text>
               <View>
-                <Text style={st.hdrTitle}>भगवद् गीता</Text>
-                <Text style={st.hdrSub}>18 अध्याय · 700 श्लोक</Text>
+                <Text style={styles.hdrTitle}>भगवद् गीता</Text>
+                <Text style={styles.hdrSub}>18 अध्याय · 700 श्लोक</Text>
               </View>
             </View>
 
             {/* Tabs */}
-            <View style={st.tabsContainer}>
+            <View style={styles.tabsContainer}>
               <TouchableOpacity
                 style={[
-                  st.tab,
+                  styles.tab,
                   tab === "gita" && {
                     borderBottomColor: colors.gold,
                     borderBottomWidth: 3,
@@ -425,7 +443,7 @@ export default function ScripturesScreen() {
               >
                 <Text
                   style={[
-                    st.tabText,
+                    styles.tabText,
                     tab === "gita" && {
                       color: colors.gold,
                       fontWeight: "bold",
@@ -436,7 +454,7 @@ export default function ScripturesScreen() {
                 </Text>
                 <Text
                   style={[
-                    st.chalisaTabTextEnglish,
+                    styles.chalisaTabTextEnglish,
                     tab === "gita" && {
                       color: colors.gold,
                       fontWeight: "bold",
@@ -448,7 +466,7 @@ export default function ScripturesScreen() {
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
-                  st.tab,
+                  styles.tab,
                   tab === "chalisas" && {
                     borderBottomColor: CHALISA_ACCENT,
                     borderBottomWidth: 3,
@@ -458,7 +476,7 @@ export default function ScripturesScreen() {
               >
                 <Text
                   style={[
-                    st.tabText,
+                    styles.tabText,
                     tab === "chalisas" && {
                       color: CHALISA_ACCENT,
                       fontWeight: "bold",
@@ -469,7 +487,7 @@ export default function ScripturesScreen() {
                 </Text>
                 <Text
                   style={[
-                    st.chalisaTabTextEnglish,
+                    styles.chalisaTabTextEnglish,
                     tab === "chalisas" && {
                       color: colors.gold,
                       fontWeight: "bold",
@@ -495,7 +513,7 @@ export default function ScripturesScreen() {
                   }}
                 />
               )}
-              contentContainerStyle={st.listPad}
+              contentContainerStyle={styles.listPad}
             />
           </View>
         </GradientBackground>
@@ -508,12 +526,12 @@ export default function ScripturesScreen() {
 
     return (
       <GradientBackground>
-        <View style={st.root}>
+        <View style={styles.root}>
           {/* Header */}
-          <View style={[st.mHdr, { borderBottomColor: a + "40" }]}>
+          <View style={[styles.mHdr, { borderBottomColor: a + "40" }]}>
             <TouchableOpacity
               style={[
-                st.mBackBtn,
+                styles.mBackBtn,
                 { backgroundColor: a + "18", borderColor: a + "40" },
               ]}
               onPress={() => setSelectedChapter(undefined)}
@@ -521,7 +539,7 @@ export default function ScripturesScreen() {
               <Ionicons name="chevron-back" size={22} color={a} />
             </TouchableOpacity>
             <View style={{ alignItems: "center", flex: 1 }}>
-              <Text style={[st.mHdrName, { color: a }]} numberOfLines={1}>
+              <Text style={[styles.mHdrName, { color: a }]} numberOfLines={1}>
                 {chData?.name}
               </Text>
             </View>
@@ -529,9 +547,9 @@ export default function ScripturesScreen() {
           </View>
 
           {/* Navigation */}
-          <View style={[st.navBar, { borderColor: a + "35" }]}>
+          <View style={[styles.navBar, { borderColor: a + "35" }]}>
             <TouchableOpacity
-              style={[st.navBtn, currentVerseIndex <= 1 && st.navBtnDim]}
+              style={[styles.navBtn, currentVerseIndex <= 1 && styles.navBtnDim]}
               onPress={() => handleVerseChange("prev")}
               disabled={currentVerseIndex <= 1}
             >
@@ -541,13 +559,13 @@ export default function ScripturesScreen() {
                 color={currentVerseIndex <= 1 ? colors.textMuted + "40" : a}
               />
             </TouchableOpacity>
-            <Text style={[st.navCount, { color: a }]}>
+            <Text style={[styles.navCount, { color: a }]}>
               {currentVerseIndex}/{chData?.verses}
             </Text>
             <TouchableOpacity
               style={[
-                st.navBtn,
-                currentVerseIndex >= (chData?.verses ?? 0) && st.navBtnDim,
+                styles.navBtn,
+                currentVerseIndex >= (chData?.verses ?? 0) && styles.navBtnDim,
               ]}
               onPress={() => handleVerseChange("next")}
               disabled={currentVerseIndex >= (chData?.verses ?? 0)}
@@ -575,7 +593,7 @@ export default function ScripturesScreen() {
                 onPress={() => setSelectedVerse(item)}
               />
             )}
-            contentContainerStyle={[st.listPad, { paddingBottom: 40 }]}
+            contentContainerStyle={[styles.listPad, { paddingBottom: 40 }]}
           />
 
           {/* Verse Detail Modal */}
@@ -586,23 +604,23 @@ export default function ScripturesScreen() {
             transparent
           >
             <GradientBackground>
-              <View style={st.vsOverlay}>
+              <View style={styles.vsOverlay}>
                 <TouchableOpacity
                   style={StyleSheet.absoluteFillObject}
                   activeOpacity={1}
                   onPress={() => setSelectedVerse(null)}
                 />
-                <View style={st.vsSheet}>
-                  <View style={st.vsHandle} />
+                <View style={styles.vsSheet}>
+                  <View style={styles.vsHandle} />
                   {selectedVerse && (
                     <>
-                      <View style={[st.vsHdr, { borderBottomColor: a + "40" }]}>
-                        <Text style={[st.vsHdrChapter, { color: a }]}>
+                      <View style={[styles.vsHdr, { borderBottomColor: a + "40" }]}>
+                        <Text style={[styles.vsHdrChapter, { color: a }]}>
                           श्लोक {selectedVerse.verse}
                         </Text>
-                        <View style={st.vsActions}>
+                        <View style={styles.vsActions}>
                           <TouchableOpacity
-                            style={st.vsActionBtn}
+                            style={styles.vsActionBtn}
                             onPress={() =>
                               toggleBookmark(
                                 `gita-${selectedVerse.chapter}-${selectedVerse.verse}`,
@@ -616,7 +634,7 @@ export default function ScripturesScreen() {
                             />
                           </TouchableOpacity>
                           <TouchableOpacity
-                            style={st.vsActionBtn}
+                            style={styles.vsActionBtn}
                             onPress={() =>
                               Share.share({
                                 message: `${selectedVerse.sanskrit}\n\n${selectedVerse.translation}`,
@@ -631,7 +649,7 @@ export default function ScripturesScreen() {
                           </TouchableOpacity>
                           <TouchableOpacity
                             style={[
-                              st.vsActionBtn,
+                              styles.vsActionBtn,
                               { backgroundColor: colors.cardBorder + "80" },
                             ]}
                             onPress={() => setSelectedVerse(null)}
@@ -645,24 +663,24 @@ export default function ScripturesScreen() {
                         </View>
                       </View>
                       <ScrollView
-                        style={st.vsScroll}
-                        contentContainerStyle={st.vsScrollContent}
+                        style={styles.vsScroll}
+                        contentContainerStyle={styles.vsScrollContent}
                         showsVerticalScrollIndicator={false}
                       >
                         <View
                           style={[
-                            st.sanskritBox,
+                            styles.sanskritBox,
                             {
                               borderColor: a + "45",
                               backgroundColor: a + "08",
                             },
                           ]}
                         >
-                          <Text style={st.sanskritTxt}>
+                          <Text style={styles.sanskritTxt}>
                             {selectedVerse.sanskrit}
                           </Text>
                         </View>
-                        <Text style={st.translTxt}>
+                        <Text style={styles.translTxt}>
                           {selectedVerse.translation}
                         </Text>
                       </ScrollView>
@@ -684,21 +702,21 @@ export default function ScripturesScreen() {
   if (tab === "chalisas" && !selectedChalisa) {
     return (
       <GradientBackground>
-        <View style={st.root}>
+        <View style={styles.root}>
           {/* Header */}
-          <View style={st.hdr}>
-            <Text style={st.hdrOm}>ॐ</Text>
+          <View style={styles.hdr}>
+            <Text style={styles.hdrOm}>ॐ</Text>
             <View>
-              <Text style={st.hdrTitle}>चालीसा</Text>
-              <Text style={st.hdrSub}>{chalisas.length} भक्ति ग्रंथ</Text>
+              <Text style={styles.hdrTitle}>चालीसा</Text>
+              <Text style={styles.hdrSub}>{chalisas.length} भक्ति ग्रंथ</Text>
             </View>
           </View>
 
           {/* Tabs */}
-          <View style={st.tabsContainer}>
+          <View style={styles.tabsContainer}>
             <TouchableOpacity
               style={[
-                st.tab,
+                styles.tab,
                 tab === "gita" && {
                   borderBottomColor: colors.gold,
                   borderBottomWidth: 3,
@@ -708,7 +726,7 @@ export default function ScripturesScreen() {
             >
               <Text
                 style={[
-                  st.tabText,
+                  styles.tabText,
                   tab === "gita" && { color: colors.gold, fontWeight: "bold" },
                 ]}
               >
@@ -716,7 +734,7 @@ export default function ScripturesScreen() {
               </Text>
               <Text
                 style={[
-                  st.chalisaTabTextEnglish,
+                  styles.chalisaTabTextEnglish,
                   tab === "gita" && {
                     color: colors.gold,
                     fontWeight: "bold",
@@ -728,7 +746,7 @@ export default function ScripturesScreen() {
             </TouchableOpacity>
             <TouchableOpacity
               style={[
-                st.tab,
+                styles.tab,
                 tab === "chalisas" && {
                   borderBottomColor: CHALISA_ACCENT,
                   borderBottomWidth: 3,
@@ -738,7 +756,7 @@ export default function ScripturesScreen() {
             >
               <Text
                 style={[
-                  st.tabText,
+                  styles.tabText,
                   tab === "chalisas" && {
                     color: CHALISA_ACCENT,
                     fontWeight: "bold",
@@ -749,7 +767,7 @@ export default function ScripturesScreen() {
               </Text>
               <Text
                 style={[
-                  st.chalisaTabTextEnglish,
+                  styles.chalisaTabTextEnglish,
                   tab === "chalisas" && {
                     color: colors.gold,
                     fontWeight: "bold",
@@ -772,7 +790,7 @@ export default function ScripturesScreen() {
                 onPress={() => setSelectedChalisa(item)}
               />
             )}
-            contentContainerStyle={st.listPad}
+            contentContainerStyle={styles.listPad}
           />
         </View>
       </GradientBackground>
@@ -786,20 +804,20 @@ export default function ScripturesScreen() {
   if (tab === "chalisas" && selectedChalisa) {
     return (
       <GradientBackground>
-        <View style={st.root}>
+        <View style={styles.root}>
           {/* Header with Back & Share */}
-          <View style={st.chalisaHeader}>
+          <View style={styles.chalisaHeader}>
             <TouchableOpacity
-              style={st.chalisaBackBtn}
+              style={styles.chalisaBackBtn}
               onPress={() => setSelectedChalisa(null)}
             >
               <Ionicons name="chevron-back" size={24} color={CHALISA_ACCENT} />
             </TouchableOpacity>
-            <Text style={st.chalisaHeaderTitle} numberOfLines={1}>
+            <Text style={styles.chalisaHeaderTitle} numberOfLines={1}>
               {getText(selectedChalisa.title, "hindi")}
             </Text>
             <TouchableOpacity
-              style={st.chalisaShareBtn}
+              style={styles.chalisaShareBtn}
               onPress={() => {
                 const content = `${getText(selectedChalisa.title, "hindi")}\n\n${getText(selectedChalisa.startingDoha, "hindi")}\n\n${getText(selectedChalisa.chaupai, "hindi")}\n\n${getText(selectedChalisa.jaiKara, "hindi")}`;
                 Share.share({ message: content });
@@ -810,13 +828,13 @@ export default function ScripturesScreen() {
           </View>
 
           {/* Language Tabs */}
-          <View style={st.chalisaTabsContainer}>
+          <View style={styles.chalisaTabsContainer}>
             {["hindi", "english"].map((l) => (
               <TouchableOpacity
                 key={l}
                 style={[
-                  st.chalisaTab,
-                  chalisaLang === l && st.chalisaTabActive,
+                  styles.chalisaTab,
+                  chalisaLang === l && styles.chalisaTabActive,
                 ]}
                 onPress={() =>
                   setChalisaLang(l as "hindi" | "english" | "sanskrit")
@@ -824,8 +842,8 @@ export default function ScripturesScreen() {
               >
                 <Text
                   style={[
-                    st.chalisaTabText,
-                    chalisaLang === l && st.chalisaTabTextActive,
+                    styles.chalisaTabText,
+                    chalisaLang === l && styles.chalisaTabTextActive,
                   ]}
                 >
                   {l === "hindi"
@@ -840,37 +858,37 @@ export default function ScripturesScreen() {
 
           {/* Content Scroll */}
           <ScrollView
-            style={st.chalisaScroll}
+            style={styles.chalisaScroll}
             showsVerticalScrollIndicator={false}
           >
-            <View style={st.chalisaContent}>
+            <View style={styles.chalisaContent}>
               {/* Title */}
-              <View style={st.chalisaTitleSection}>
-                <Text style={st.chalisaTitle}>
+              <View style={styles.chalisaTitleSection}>
+                <Text style={styles.chalisaTitle}>
                   {getText(selectedChalisa.title, chalisaLang)}
                 </Text>
               </View>
 
-              <View style={st.chalisaDivider} />
+              <View style={styles.chalisaDivider} />
 
               {/* Starting Doha */}
-              <View style={st.chalisaSection}>
-                <Text style={st.chalisaSectionLabel}>Opening Verse (दोहा)</Text>
-                <Text style={st.chalisaDohaText}>
+              <View style={styles.chalisaSection}>
+                <Text style={styles.chalisaSectionLabel}>Opening Verse (दोहा)</Text>
+                <Text style={styles.chalisaDohaText}>
                   {getText(selectedChalisa.startingDoha, chalisaLang)}
                 </Text>
               </View>
 
-              <View style={st.chalisaDivider} />
+              <View style={styles.chalisaDivider} />
 
               {/* Chaupai */}
-              <View style={st.chalisaSection}>
-                <Text style={st.chalisaSectionLabel}>Body (चौपाई)</Text>
+              <View style={styles.chalisaSection}>
+                <Text style={styles.chalisaSectionLabel}>Body (चौपाई)</Text>
                 {splitParagraphs(
                   getText(selectedChalisa.chaupai, chalisaLang),
                 ).map((para, idx) => (
-                  <View key={idx} style={st.chalisaChaupaiPara}>
-                    <Text style={st.chalisaChaupaiText}>{para}॥</Text>
+                  <View key={idx} style={styles.chalisaChaupaiPara}>
+                    <Text style={styles.chalisaChaupaiText}>{para}॥</Text>
                   </View>
                 ))}
               </View>
@@ -878,12 +896,12 @@ export default function ScripturesScreen() {
               {/* Ending Doha */}
               {selectedChalisa.endingDoha && (
                 <>
-                  <View style={st.chalisaDivider} />
-                  <View style={st.chalisaSection}>
-                    <Text style={st.chalisaSectionLabel}>
+                  <View style={styles.chalisaDivider} />
+                  <View style={styles.chalisaSection}>
+                    <Text style={styles.chalisaSectionLabel}>
                       Closing Verse (दोहा)
                     </Text>
-                    <Text style={st.chalisaDohaText}>
+                    <Text style={styles.chalisaDohaText}>
                       {getText(selectedChalisa.endingDoha, chalisaLang)}
                     </Text>
                   </View>
@@ -891,10 +909,10 @@ export default function ScripturesScreen() {
               )}
 
               {/* Jai Kara */}
-              <View style={st.chalisaDivider} />
-              <View style={st.chalisaSection}>
-                <Text style={st.chalisaSectionLabel}>Jai Kara (जय कारा)</Text>
-                <Text style={st.chalisaJaiKaraText}>
+              <View style={styles.chalisaDivider} />
+              <View style={styles.chalisaSection}>
+                <Text style={styles.chalisaSectionLabel}>Jai Kara (जय कारा)</Text>
+                <Text style={styles.chalisaJaiKaraText}>
                   {getText(selectedChalisa.jaiKara, chalisaLang)}
                 </Text>
               </View>
@@ -914,7 +932,12 @@ export default function ScripturesScreen() {
 // STYLES
 // ─────────────────────────────────────────────
 
-const st = StyleSheet.create({
+function makeStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   root: { flex: 1 },
 
   // Header
@@ -1286,4 +1309,5 @@ const st = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: CHALISA_ACCENT + "12",
   },
-});
+  });
+}

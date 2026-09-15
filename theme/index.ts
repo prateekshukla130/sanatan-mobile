@@ -3,6 +3,10 @@ import { colors } from './colors';
 import { spacing } from './spacing';
 import { typography } from './typography';
 
+export { THEMES, THEME_LABELS } from './themes';
+export type { ThemeName, ThemeColors } from './themes';
+export { ThemeProvider, useTheme } from './ThemeContext';
+
 export const theme = {
   colors,
   spacing,

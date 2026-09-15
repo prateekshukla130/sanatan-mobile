@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, Text, StyleSheet, ViewStyle, TextStyle } from "react-native";
-import { colors, spacing, typography, theme } from "../theme";
-import { LinearGradient } from "expo-linear-gradient";
+import { useTheme, theme } from "../theme";
 
 interface CardProps {
   children: React.ReactNode;
@@ -16,6 +15,40 @@ export const Card: React.FC<CardProps> = ({
   title,
   subtitle,
 }) => {
+  const { colors, spacing, typography } = useTheme();
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          marginHorizontal: spacing.md,
+          marginVertical: spacing.sm,
+        },
+        card: {
+          backgroundColor: colors.cardBg,
+          borderRadius: theme.borderRadius.lg,
+          borderWidth: 1,
+          borderColor: colors.cardBorder,
+          padding: spacing.md,
+          ...theme.shadows.md,
+        },
+        header: {
+          marginBottom: spacing.md,
+        },
+        title: {
+          fontSize: typography.fontSize.xl,
+          fontWeight: typography.fontWeight.bold,
+          color: colors.textPrimary,
+          marginBottom: spacing.xs,
+        },
+        subtitle: {
+          fontSize: typography.fontSize.md,
+          color: colors.textMuted,
+        },
+      }),
+    [colors, spacing, typography],
+  );
+
   return (
     <View style={[styles.container, style]}>
       <View style={styles.card}>
@@ -30,31 +63,3 @@ export const Card: React.FC<CardProps> = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: spacing.md,
-    marginVertical: spacing.sm,
-  },
-  card: {
-    backgroundColor: colors.cardBg,
-    borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: colors.cardBorder,
-    padding: spacing.md,
-    ...theme.shadows.md,
-  },
-  header: {
-    marginBottom: spacing.md,
-  },
-  title: {
-    fontSize: typography.fontSize.xl,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
-    marginBottom: spacing.xs,
-  },
-  subtitle: {
-    fontSize: typography.fontSize.md,
-    color: colors.textMuted,
-  },
-});

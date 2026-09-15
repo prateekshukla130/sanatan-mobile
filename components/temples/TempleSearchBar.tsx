@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -8,8 +8,17 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { colors, spacing, typography } from "@/theme";
+import { spacing, typography, useTheme, ThemeColors } from "@/theme";
 import { TempleSuggestion } from "@/hooks/useNearbyTemples";
+
+// ─────────────────────────────────────────────
+// SHARED THEME-AWARE STYLES
+// ─────────────────────────────────────────────
+function useSearchBarStyles() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+  return { colors, styles };
+}
 
 interface TempleSearchBarProps {
   value: string;
@@ -28,6 +37,7 @@ export function TempleSearchBar({
   onSuggestionPress,
   onClearSuggestions,
 }: TempleSearchBarProps) {
+  const { colors, styles } = useSearchBarStyles();
   return (
     <View style={styles.wrapper}>
       <View style={styles.inputWrap}>
@@ -69,7 +79,8 @@ export function TempleSearchBar({
   );
 }
 
-const styles = StyleSheet.create({
+function makeStyles(colors: ThemeColors) {
+  return StyleSheet.create({
   wrapper: {
     position: "absolute",
     top: spacing.md,
@@ -117,4 +128,5 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.xs,
     marginTop: 2,
   },
-});
+  });
+}

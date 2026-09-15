@@ -11,7 +11,7 @@
  *   npx expo install @react-native-community/datetimepicker expo-print expo-sharing
  */
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -25,7 +25,7 @@ import {
   Dimensions,
 } from "react-native";
 import { GradientBackground } from "../../components/GradientBackground";
-import { colors, spacing, typography } from "../../theme";
+import { useTheme, ThemeColors, spacing, typography } from "../../theme";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as Print from "expo-print";
@@ -42,6 +42,23 @@ import {
 
 const { width: SW } = Dimensions.get("window");
 const TZ_OFFSET = new Date().getTimezoneOffset() * -1;
+
+// ─────────────────────────────────────────────
+// SHARED THEME-AWARE STYLES
+// (built once per theme change, shared by every atom in this file)
+// ─────────────────────────────────────────────
+function useKundliStyles() {
+  const { colors, spacing, typography } = useTheme();
+  const st = useMemo(
+    () => makeStyles(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  const ch = useMemo(
+    () => makeChStyles(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  return { colors, spacing, typography, st, ch };
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONSTANTS
@@ -267,6 +284,7 @@ interface ChartProps {
 }
 
 const NorthIndianKundli: React.FC<ChartProps> = ({ data, lagna }) => {
+  const { ch } = useKundliStyles();
   // Build house → planet abbreviations map
   const housePlanets: Record<number, string[]> = {};
   for (let h = 1; h <= 12; h++) housePlanets[h] = [];
@@ -353,7 +371,12 @@ const NorthIndianKundli: React.FC<ChartProps> = ({ data, lagna }) => {
   );
 };
 
-const ch = StyleSheet.create({
+function makeChStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   outer: {
     borderWidth: 2,
     borderColor: colors.gold + "70",
@@ -478,7 +501,8 @@ const ch = StyleSheet.create({
     borderColor: colors.gold + "25",
   },
   lagnaBarTxt: { fontSize: 11, color: colors.gold, fontWeight: "600" },
-});
+  });
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // VALIDATION
@@ -511,16 +535,19 @@ function validateForm(f: BirthData): string | null {
 // SMALL UI ATOMS
 // ─────────────────────────────────────────────────────────────────────────────
 
-const SecDiv = ({ en, hi }: { en: string; hi: string }) => (
-  <View style={st.secDiv}>
-    <View style={st.secLine} />
-    <View style={st.secPill}>
-      <Text style={st.secHi}>{hi}</Text>
-      <Text style={st.secEn}> · {en}</Text>
+const SecDiv = ({ en, hi }: { en: string; hi: string }) => {
+  const { st } = useKundliStyles();
+  return (
+    <View style={st.secDiv}>
+      <View style={st.secLine} />
+      <View style={st.secPill}>
+        <Text style={st.secHi}>{hi}</Text>
+        <Text style={st.secEn}> · {en}</Text>
+      </View>
+      <View style={st.secLine} />
     </View>
-    <View style={st.secLine} />
-  </View>
-);
+  );
+};
 
 const InfoRow = ({
   icon,
@@ -536,23 +563,26 @@ const InfoRow = ({
   valueEn: string;
   valueHi?: string;
   accent?: boolean;
-}) => (
-  <View style={st.infoRow}>
-    {icon ? (
-      <Text style={st.infoIcon}>{icon}</Text>
-    ) : (
-      <View style={{ width: 22 }} />
-    )}
-    <View style={st.infoLabels}>
-      <Text style={st.infoLHi}>{labelHi}</Text>
-      <Text style={st.infoLEn}>{labelEn}</Text>
+}) => {
+  const { st } = useKundliStyles();
+  return (
+    <View style={st.infoRow}>
+      {icon ? (
+        <Text style={st.infoIcon}>{icon}</Text>
+      ) : (
+        <View style={{ width: 22 }} />
+      )}
+      <View style={st.infoLabels}>
+        <Text style={st.infoLHi}>{labelHi}</Text>
+        <Text style={st.infoLEn}>{labelEn}</Text>
+      </View>
+      <View style={st.infoVals}>
+        <Text style={[st.infoVEn, accent && st.accent]}>{valueEn}</Text>
+        {valueHi ? <Text style={st.infoVHi}>{valueHi}</Text> : null}
+      </View>
     </View>
-    <View style={st.infoVals}>
-      <Text style={[st.infoVEn, accent && st.accent]}>{valueEn}</Text>
-      {valueHi ? <Text style={st.infoVHi}>{valueHi}</Text> : null}
-    </View>
-  </View>
-);
+  );
+};
 
 const fmtTime = (d: any): string => {
   if (!d) return "—";
@@ -574,6 +604,7 @@ const DateTimeFields: React.FC<{ date: Date; onChange: (d: Date) => void }> = ({
   date,
   onChange,
 }) => {
+  const { colors, st } = useKundliStyles();
   const [showDate, setShowDate] = useState(false);
   const [showTime, setShowTime] = useState(false);
 
@@ -664,7 +695,9 @@ const BirthForm: React.FC<{
   compact,
   noGenerate,
   btnLabel,
-}) => (
+}) => {
+  const { colors, st } = useKundliStyles();
+  return (
   <KeyboardAvoidingView
     behavior={Platform.OS === "ios" ? "padding" : undefined}
   >
@@ -758,13 +791,15 @@ const BirthForm: React.FC<{
       )}
     </View>
   </KeyboardAvoidingView>
-);
+  );
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CHOGHADIYA SECTION
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ChoghadiyaSection: React.FC<{ data: any }> = ({ data }) => {
+  const { st } = useKundliStyles();
   const [showNight, setShowNight] = useState(false);
   const list = showNight ? data?.choghadiya?.night : data?.choghadiya?.day;
   if (!list?.length) return null;
@@ -861,6 +896,7 @@ const scoreVerdict = (s: number) =>
         : "कम अनुकूलता · Low ❌";
 
 const MangalDosha = ({ data, label }: { data: any; label: string }) => {
+  const { st } = useKundliStyles();
   const marsRashi = data?.planetaryPositions?.mars?.rashi ?? -1;
   const lagna = data?.lagna ?? data?.planetaryPositions?.sun?.rashi ?? 0;
   const house = ((marsRashi - lagna + 12) % 12) + 1;
@@ -982,6 +1018,7 @@ async function sharePDF(html: string) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function KundliScreen() {
+  const { colors, st } = useKundliStyles();
   const [tab, setTab] = useState<"kundli" | "matching">("kundli");
   const [form, setForm] = useState<BirthData>({ ...EMPTY_FORM });
   const [form2, setForm2] = useState<BirthData>({
@@ -1608,7 +1645,12 @@ export default function KundliScreen() {
 // STYLES
 // ─────────────────────────────────────────────────────────────────────────────
 
-const st = StyleSheet.create({
+function makeStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   container: { flex: 1 },
   content: { paddingHorizontal: spacing.md, paddingBottom: spacing.xl * 3 },
 
@@ -2006,4 +2048,5 @@ const st = StyleSheet.create({
     textAlign: "center",
   },
   doshaSub: { fontSize: 10, color: colors.textMuted },
-});
+  });
+}

@@ -1,8 +1,17 @@
 import React, { forwardRef, useMemo } from "react";
 import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
 import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
-import { colors, spacing, typography } from "@/theme";
+import { spacing, typography, useTheme, ThemeColors } from "@/theme";
 import { Temple } from "@/hooks/useNearbyTemples";
+
+// ─────────────────────────────────────────────
+// SHARED THEME-AWARE STYLES
+// ─────────────────────────────────────────────
+function useDetailsSheetStyles() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+  return { colors, styles };
+}
 
 interface TempleDetailsBottomSheetProps {
   temple: Temple | null;
@@ -17,6 +26,7 @@ export const TempleDetailsBottomSheet = forwardRef<
   { temple, onGetDirections, onCallTemple },
   ref,
 ) {
+  const { styles } = useDetailsSheetStyles();
   const snapPoints = useMemo(() => ["28%", "42%"], []);
 
   if (!temple) {
@@ -83,7 +93,8 @@ export async function openDialer(phoneNumber?: string) {
   await Linking.openURL(`tel:${sanitized}`);
 }
 
-const styles = StyleSheet.create({
+function makeStyles(colors: ThemeColors) {
+  return StyleSheet.create({
   sheetBg: {
     backgroundColor: colors.bgSecondary,
     borderWidth: 1,
@@ -145,4 +156,5 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.semibold,
     fontSize: typography.fontSize.sm,
   },
-});
+  });
+}

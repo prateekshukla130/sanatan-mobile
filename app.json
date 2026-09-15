@@ -13,7 +13,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.sanatandharma.app",
       "config": {
-        "googleMapsApiKey": "${EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}"
+        "googleMapsApiKey": "AIzaSyBOSKUAAlSxejC94KZURRcCaZR3IMp2PLU"
       },
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Allow this app to access your location to find nearby temples and navigation routes.",
@@ -26,7 +26,7 @@
       "package": "com.sanatandharma.app",
       "config": {
         "googleMaps": {
-          "apiKey": "${EXPO_PUBLIC_GOOGLE_MAPS_API_KEY}"
+          "apiKey": "AIzaSyBOSKUAAlSxejC94KZURRcCaZR3IMp2PLU"
         }
       },
       "adaptiveIcon": {
@@ -71,7 +71,17 @@
       "expo-status-bar",
       "expo-web-browser",
       "expo-asset",
-      "expo-audio"
+      "expo-audio",
+      "expo-build-properties",
+      [
+        "llama.rn",
+        {
+          "enableEntitlements": true,
+          "entitlementsProfile": "production",
+          "forceCxx20": true,
+          "enableOpenCLAndHexagon": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

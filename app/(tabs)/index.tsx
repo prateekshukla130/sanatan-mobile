@@ -15,7 +15,7 @@
  *  usePanchangLocation — imported from panchangService (already there).
  *  No new hook, no new service, no new file needed.
  */
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -35,7 +35,7 @@ import { GradientBackground } from "../../components/GradientBackground";
 import { Card } from "../../components/Card";
 import { AnimatedDiya } from "../../components/AnimatedDiya";
 import { MoonPhase } from "../../components/MoonPhase";
-import { colors, spacing, typography } from "../../theme";
+import { useTheme, ThemeColors } from "../../theme";
 import {
   panchangService,
   PanchangData,
@@ -51,6 +51,20 @@ import {
 import { bhajanService } from "@/services/bhajanService";
 import { artistService } from "@/services/artistsService";
 import { getPanchangam, Observer } from "@ishubhamx/panchangam-js";
+import { JourneyModal } from "@/components/JourneyModal";
+import { useLanguage } from "@/localization";
+
+// ─────────────────────────────────────────────
+// SHARED THEME-AWARE STYLES
+// ─────────────────────────────────────────────
+function useHomeStyles() {
+  const { colors, spacing, typography } = useTheme();
+  const styles = useMemo(
+    () => makeStyles(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  return { colors, spacing, typography, styles };
+}
 
 // ─────────────────────────────────────────────
 // FESTIVAL HELPERS
@@ -97,6 +111,7 @@ const FALLBACK_LNG = 77.209;
 // FESTIVAL CARD  (new, self-contained)
 // ─────────────────────────────────────────────
 const FestivalCard = ({ fest }: { fest: FestivalObj }) => {
+  const { colors, styles } = useHomeStyles();
   const accent = FESTIVAL_COLOR[fest.category ?? "minor"] ?? colors.gold;
   const emoji =
     fest.category === "major" ? "🎊" : fest.isFastingDay ? "🙏" : "🪔";
@@ -140,19 +155,22 @@ const BiCell = ({
   subValue?: string;
   accent?: boolean;
   fullWidth?: boolean;
-}) => (
-  <View style={[styles.biCell, fullWidth && styles.biCellFull]}>
-    <View style={styles.biCellLabelRow}>
-      <Text style={styles.biCellLabelEn}>{labelEn}</Text>
-      <Text style={styles.biCellLabelHi}>{labelHi}</Text>
+}) => {
+  const { styles } = useHomeStyles();
+  return (
+    <View style={[styles.biCell, fullWidth && styles.biCellFull]}>
+      <View style={styles.biCellLabelRow}>
+        <Text style={styles.biCellLabelEn}>{labelEn}</Text>
+        <Text style={styles.biCellLabelHi}>{labelHi}</Text>
+      </View>
+      <Text style={[styles.biCellValueEn, accent && styles.accent]}>
+        {valueEn}
+      </Text>
+      <Text style={styles.biCellValueHi}>{valueHi}</Text>
+      {subValue ? <Text style={styles.biCellSub}>{subValue}</Text> : null}
     </View>
-    <Text style={[styles.biCellValueEn, accent && styles.accent]}>
-      {valueEn}
-    </Text>
-    <Text style={styles.biCellValueHi}>{valueHi}</Text>
-    {subValue ? <Text style={styles.biCellSub}>{subValue}</Text> : null}
-  </View>
-);
+  );
+};
 
 const InfoCell = ({
   label,
@@ -164,13 +182,18 @@ const InfoCell = ({
   value: string;
   sub?: string;
   accent?: boolean;
-}) => (
-  <View style={styles.infoCell}>
-    <Text style={styles.infoCellLabel}>{label}</Text>
-    <Text style={[styles.infoCellValue, accent && styles.accent]}>{value}</Text>
-    {sub ? <Text style={styles.infoCellSub}>{sub}</Text> : null}
-  </View>
-);
+}) => {
+  const { styles } = useHomeStyles();
+  return (
+    <View style={styles.infoCell}>
+      <Text style={styles.infoCellLabel}>{label}</Text>
+      <Text style={[styles.infoCellValue, accent && styles.accent]}>
+        {value}
+      </Text>
+      {sub ? <Text style={styles.infoCellSub}>{sub}</Text> : null}
+    </View>
+  );
+};
 
 const TimingRow = ({
   icon,
@@ -184,40 +207,49 @@ const TimingRow = ({
   labelHi: string;
   slot: TimeSlot;
   dot: string;
-}) => (
-  <View style={styles.timingRow}>
-    <View style={[styles.dot, { backgroundColor: dot }]} />
-    <Text style={styles.timingIcon}>{icon}</Text>
-    <View style={styles.timingLabels}>
-      <Text style={styles.timingLabelEn}>{labelEn}</Text>
-      <Text style={styles.timingLabelHi}>{labelHi}</Text>
+}) => {
+  const { styles } = useHomeStyles();
+  return (
+    <View style={styles.timingRow}>
+      <View style={[styles.dot, { backgroundColor: dot }]} />
+      <Text style={styles.timingIcon}>{icon}</Text>
+      <View style={styles.timingLabels}>
+        <Text style={styles.timingLabelEn}>{labelEn}</Text>
+        <Text style={styles.timingLabelHi}>{labelHi}</Text>
+      </View>
+      <Text style={styles.timingTime}>
+        {slot.start}
+        {"\n"}
+        {slot.end}
+      </Text>
     </View>
-    <Text style={styles.timingTime}>
-      {slot.start}
-      {"\n"}
-      {slot.end}
-    </Text>
-  </View>
-);
+  );
+};
 
-const SectionHeader = ({ en, hi }: { en: string; hi: string }) => (
-  <View style={styles.sectionHeader}>
-    <View style={styles.sectionLine} />
-    <View style={styles.sectionPill}>
-      <Text style={styles.sectionEn}>{en}</Text>
-      <Text style={styles.sectionHi}>{hi}</Text>
+const SectionHeader = ({ en, hi }: { en: string; hi: string }) => {
+  const { styles } = useHomeStyles();
+  return (
+    <View style={styles.sectionHeader}>
+      <View style={styles.sectionLine} />
+      <View style={styles.sectionPill}>
+        <Text style={styles.sectionEn}>{en}</Text>
+        <Text style={styles.sectionHi}>{hi}</Text>
+      </View>
+      <View style={styles.sectionLine} />
     </View>
-    <View style={styles.sectionLine} />
-  </View>
-);
+  );
+};
 
-const Pill = ({ text, color }: { text: string; color?: string }) => (
-  <View style={[styles.pill, { borderColor: color ?? colors.gold }]}>
-    <Text style={[styles.pillText, { color: color ?? colors.gold }]}>
-      {text}
-    </Text>
-  </View>
-);
+const Pill = ({ text, color }: { text: string; color?: string }) => {
+  const { colors, styles } = useHomeStyles();
+  return (
+    <View style={[styles.pill, { borderColor: color ?? colors.gold }]}>
+      <Text style={[styles.pillText, { color: color ?? colors.gold }]}>
+        {text}
+      </Text>
+    </View>
+  );
+};
 
 // ─────────────────────────────────────────────
 // SCREEN
@@ -233,6 +265,9 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [dailyMantra, setDailyMantra] = useState<Mantra | null>(null);
   const [showInauspicious, setShowInauspicious] = useState(false);
+  const [journeyOpen, setJourneyOpen] = useState(false);
+  const { t } = useLanguage();
+  const { colors, styles } = useHomeStyles();
 
   // ── Festival loader (@ishubhamx/panchangam-js) ────────────────────────────
   // Non-fatal: if it throws, festivals stay []. Never blocks the screen.
@@ -350,6 +385,13 @@ export default function HomeScreen() {
               ) : null}
             </>
           )}
+          <TouchableOpacity
+            style={styles.journeyBtn}
+            onPress={() => setJourneyOpen(true)}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.journeyBtnTxt}>🪷 {t("journey.openJourney")}</Text>
+          </TouchableOpacity>
         </Animated.View>
         {/* ════════════════════════════════════════════════════
             FESTIVALS  — @ishubhamx/panchangam-js data
@@ -660,16 +702,20 @@ export default function HomeScreen() {
           <Text style={styles.footerSub}>॥ सर्वे भवन्तु सुखिनः ॥</Text>
         </Animated.View>
       </ScrollView>
+      <JourneyModal visible={journeyOpen} onClose={() => setJourneyOpen(false)} />
     </GradientBackground>
   );
 }
 
 // ─────────────────────────────────────────────
-// STYLES
-// Original styles kept byte-for-byte.
-// New styles (locationPill, fest*) added at the bottom.
+// STYLES (theme-dependent — built via useHomeStyles())
 // ─────────────────────────────────────────────
-const styles = StyleSheet.create({
+function makeStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   // ── original ──────────────────────────────────────────────────────────────
   container: { flex: 1 },
   content: { paddingVertical: spacing.lg, paddingHorizontal: spacing.sm },
@@ -933,6 +979,16 @@ const styles = StyleSheet.create({
     borderColor: colors.gold + "35",
   },
   locationPillTxt: { fontSize: 11, color: colors.gold, fontWeight: "600" },
+  journeyBtn: {
+    marginTop: spacing.sm,
+    backgroundColor: colors.gold + "18",
+    borderWidth: 1,
+    borderColor: colors.gold + "45",
+    borderRadius: 20,
+    paddingHorizontal: spacing.md,
+    paddingVertical: 6,
+  },
+  journeyBtnTxt: { fontSize: 12, fontWeight: "700", color: colors.gold },
   festCard: {
     borderLeftWidth: 4,
     borderRadius: 10,
@@ -958,4 +1014,5 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
     lineHeight: 18,
   },
-});
+  });
+}

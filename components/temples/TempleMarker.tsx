@@ -1,8 +1,17 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Animated, Easing, StyleSheet, Text, View } from "react-native";
 import { Marker } from "react-native-maps";
-import { colors, typography } from "@/theme";
+import { typography, useTheme, ThemeColors } from "@/theme";
 import { Temple } from "@/hooks/useNearbyTemples";
+
+// ─────────────────────────────────────────────
+// SHARED THEME-AWARE STYLES
+// ─────────────────────────────────────────────
+function useMarkerStyles() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+  return { colors, styles };
+}
 
 interface TempleMarkerProps {
   temple: Temple;
@@ -11,6 +20,7 @@ interface TempleMarkerProps {
 }
 
 export function TempleMarker({ temple, index, onPress }: TempleMarkerProps) {
+  const { styles } = useMarkerStyles();
   const scale = useRef(new Animated.Value(0.5)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
@@ -55,7 +65,8 @@ export function TempleMarker({ temple, index, onPress }: TempleMarkerProps) {
   );
 }
 
-const styles = StyleSheet.create({
+function makeStyles(colors: ThemeColors) {
+  return StyleSheet.create({
   markerWrap: {
     alignItems: "center",
   },
@@ -78,4 +89,5 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: "hidden",
   },
-});
+  });
+}

@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useMemo,
+} from "react";
 import {
   View,
   Text,
@@ -11,7 +17,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { GradientBackground } from "../../components/GradientBackground";
-import { colors, spacing, typography, theme } from "../../theme";
+import { spacing, typography, theme, useTheme, ThemeColors } from "../../theme";
 import {
   panchangService,
   PanchangData,
@@ -36,6 +42,23 @@ import { Card } from "@/components/Card";
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const DAY_SIZE = Math.floor((SCREEN_WIDTH - spacing.md * 2) / 7);
+
+// ─────────────────────────────────────────────
+// SHARED THEME-AWARE STYLES
+// (built once per theme change, shared by every atom in this file)
+// ─────────────────────────────────────────────
+function useCalendarStyles() {
+  const { colors, spacing, typography } = useTheme();
+  const s = useMemo(
+    () => makeStyles(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  const mStyles = useMemo(
+    () => makeModalStyles(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  return { colors, spacing, typography, s, mStyles };
+}
 
 // ─────────────────────────────────────────────
 // FESTIVAL HELPERS
@@ -82,6 +105,7 @@ const FALLBACK_LNG = 77.209;
 // FESTIVAL CARD  (new, self-contained)
 // ─────────────────────────────────────────────
 const FestivalCard = ({ fest }: { fest: FestivalObj }) => {
+  const { colors, mStyles } = useCalendarStyles();
   const accent = FESTIVAL_COLOR[fest.category ?? "minor"] ?? colors.gold;
   const emoji =
     fest.category === "major" ? "🎊" : fest.isFastingDay ? "🙏" : "🪔";
@@ -264,7 +288,9 @@ const InfoRow = ({
   valueEn: string;
   valueHi?: string;
   accent?: boolean;
-}) => (
+}) => {
+  const { mStyles } = useCalendarStyles();
+  return (
   <View style={mStyles.infoRow}>
     <Text style={mStyles.infoIcon}>{icon}</Text>
     <View style={mStyles.infoLabels}>
@@ -278,7 +304,8 @@ const InfoRow = ({
       {valueHi ? <Text style={mStyles.infoValueHi}>{valueHi}</Text> : null}
     </View>
   </View>
-);
+  );
+};
 
 const TimeRow = ({
   icon,
@@ -292,7 +319,9 @@ const TimeRow = ({
   labelHi: string;
   value: string;
   dot: string;
-}) => (
+}) => {
+  const { mStyles } = useCalendarStyles();
+  return (
   <View style={mStyles.infoRow}>
     <View style={[mStyles.dot, { backgroundColor: dot }]} />
     <Text style={mStyles.infoIcon}>{icon}</Text>
@@ -304,7 +333,8 @@ const TimeRow = ({
       <Text style={mStyles.infoValueEn}>{value}</Text>
     </View>
   </View>
-);
+  );
+};
 
 const SlotRow = ({
   icon,
@@ -320,7 +350,9 @@ const SlotRow = ({
   start: string;
   end: string;
   dot: string;
-}) => (
+}) => {
+  const { mStyles } = useCalendarStyles();
+  return (
   <View style={mStyles.infoRow}>
     <View style={[mStyles.dot, { backgroundColor: dot }]} />
     <Text style={mStyles.infoIcon}>{icon}</Text>
@@ -333,9 +365,12 @@ const SlotRow = ({
       <Text style={mStyles.infoValueHi}>{end}</Text>
     </View>
   </View>
-);
+  );
+};
 
-const SecDiv = ({ en, hi }: { en: string; hi: string }) => (
+const SecDiv = ({ en, hi }: { en: string; hi: string }) => {
+  const { mStyles } = useCalendarStyles();
+  return (
   <View style={mStyles.secDiv}>
     <View style={mStyles.secLine} />
     <View style={mStyles.secPill}>
@@ -344,12 +379,14 @@ const SecDiv = ({ en, hi }: { en: string; hi: string }) => (
     </View>
     <View style={mStyles.secLine} />
   </View>
-);
+  );
+};
 
 // ─────────────────────────────────────────────
 // SCREEN
 // ─────────────────────────────────────────────
 export default function CalendarScreen() {
+  const { colors, s, mStyles } = useCalendarStyles();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [panchang, setPanchang] = useState<PanchangData | null>(null);
@@ -937,7 +974,12 @@ export default function CalendarScreen() {
 // ─────────────────────────────────────────────
 // CALENDAR STYLES
 // ─────────────────────────────────────────────
-const s = StyleSheet.create({
+function makeStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   container: { flex: 1 },
   content: { paddingBottom: spacing.xl },
 
@@ -1080,12 +1122,18 @@ const s = StyleSheet.create({
   legendDot: { width: 10, height: 10, borderRadius: 5, flexShrink: 0 },
   legendHi: { fontSize: 11, color: colors.textPrimary, fontWeight: "600" },
   legendEn: { fontSize: 10, color: colors.textMuted },
-});
+  });
+}
 
 // ─────────────────────────────────────────────
 // MODAL STYLES
 // ─────────────────────────────────────────────
-const mStyles = StyleSheet.create({
+function makeModalStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.6)",
@@ -1292,4 +1340,5 @@ const mStyles = StyleSheet.create({
     marginTop: spacing.xs,
     lineHeight: 18,
   },
-});
+  });
+}

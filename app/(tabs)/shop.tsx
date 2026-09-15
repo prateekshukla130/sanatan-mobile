@@ -31,7 +31,7 @@ import {
   Dimensions,
 } from "react-native";
 import { GradientBackground } from "../../components/GradientBackground";
-import { colors, spacing, typography } from "../../theme";
+import { spacing, typography, useTheme, ThemeColors } from "../../theme";
 import { Ionicons } from "@expo/vector-icons";
 import {
   useProducts,
@@ -42,6 +42,35 @@ import {
 const { width: SW } = Dimensions.get("window");
 const CARD_WIDTH = (SW - spacing.md * 2 - spacing.sm) / 2;
 const FEATURED_WIDTH = SW * 0.7;
+
+// ─────────────────────────────────────────────
+// SHARED THEME-AWARE STYLES
+// (built once per theme change, shared by every atom in this file)
+// ─────────────────────────────────────────────
+function useShopStyles() {
+  const { colors, spacing, typography } = useTheme();
+  const card = useMemo(
+    () => makeCardStyles(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  const feat = useMemo(
+    () => makeFeatStyles(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  const sk = useMemo(
+    () => makeSkStyles(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  const tab = useMemo(
+    () => makeTabStyles(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  const st = useMemo(
+    () => makeStStyles(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  return { colors, spacing, typography, card, feat, sk, tab, st };
+}
 
 // ─────────────────────────────────────────────
 // OPEN AFFILIATE LINK
@@ -70,6 +99,7 @@ async function openAffiliateLink(
 // BADGE CHIP
 // ─────────────────────────────────────────────
 const BadgeChip: React.FC<{ label: string }> = ({ label }) => {
+  const { colors } = useShopStyles();
   const color =
     label === "Bestseller"
       ? "#F97316"
@@ -109,7 +139,9 @@ const chip = StyleSheet.create({
 // ─────────────────────────────────────────────
 // PRODUCT CARD  (grid)
 // ─────────────────────────────────────────────
-const ProductCard: React.FC<{ item: Product }> = ({ item }) => (
+const ProductCard: React.FC<{ item: Product }> = ({ item }) => {
+  const { colors, card } = useShopStyles();
+  return (
   <View style={card.wrap}>
     {/* Image */}
     <View style={card.imgBox}>
@@ -158,9 +190,15 @@ const ProductCard: React.FC<{ item: Product }> = ({ item }) => (
       </View>
     </View>
   </View>
-);
+  );
+};
 
-const card = StyleSheet.create({
+function makeCardStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   wrap: {
     width: CARD_WIDTH,
     backgroundColor: colors.cardBg,
@@ -210,12 +248,15 @@ const card = StyleSheet.create({
     paddingVertical: 5,
   },
   buyTxt: { fontSize: 11, color: colors.bgSecondary, fontWeight: "700" },
-});
+  });
+}
 
 // ─────────────────────────────────────────────
 // FEATURED CARD  (horizontal scroll)
 // ─────────────────────────────────────────────
-const FeaturedCard: React.FC<{ item: Product }> = ({ item }) => (
+const FeaturedCard: React.FC<{ item: Product }> = ({ item }) => {
+  const { feat } = useShopStyles();
+  return (
   <TouchableOpacity
     style={feat.wrap}
     onPress={() => openAffiliateLink(item.affiliateUrl, item.name)}
@@ -250,9 +291,15 @@ const FeaturedCard: React.FC<{ item: Product }> = ({ item }) => (
       </View>
     </View>
   </TouchableOpacity>
-);
+  );
+};
 
-const feat = StyleSheet.create({
+function makeFeatStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   wrap: {
     width: FEATURED_WIDTH,
     height: 170,
@@ -302,12 +349,15 @@ const feat = StyleSheet.create({
     paddingVertical: 5,
   },
   buyTxt: { fontSize: 11, color: colors.bgSecondary, fontWeight: "700" },
-});
+  });
+}
 
 // ─────────────────────────────────────────────
 // SKELETON CARD
 // ─────────────────────────────────────────────
-const SkeletonCard = () => (
+const SkeletonCard = () => {
+  const { card, sk } = useShopStyles();
+  return (
   <View style={[card.wrap, sk.wrap]}>
     <View style={[card.imgBox, sk.block]} />
     <View style={card.info}>
@@ -316,12 +366,19 @@ const SkeletonCard = () => (
       <View style={[sk.line, { width: "40%", height: 16, marginTop: 8 }]} />
     </View>
   </View>
-);
-const sk = StyleSheet.create({
+  );
+};
+function makeSkStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   wrap: { opacity: 0.5 },
   block: { backgroundColor: colors.cardBorder },
   line: { backgroundColor: colors.cardBorder, borderRadius: 4 },
-});
+  });
+}
 
 // ─────────────────────────────────────────────
 // CATEGORY TAB
@@ -331,6 +388,7 @@ const CategoryTab: React.FC<{
   active: boolean;
   onPress: () => void;
 }> = ({ cat, active, onPress }) => {
+  const { tab } = useShopStyles();
   const label = getCategoryLabel(cat);
   return (
     <TouchableOpacity
@@ -344,7 +402,12 @@ const CategoryTab: React.FC<{
     </TouchableOpacity>
   );
 };
-const tab = StyleSheet.create({
+function makeTabStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   btn: {
     alignItems: "center",
     paddingHorizontal: 14,
@@ -362,12 +425,15 @@ const tab = StyleSheet.create({
   enActive: { color: colors.gold },
   hi: { fontSize: 9, color: colors.textMuted + "88" },
   hiActive: { color: colors.gold + "AA" },
-});
+  });
+}
 
 // ─────────────────────────────────────────────
 // EMPTY STATE
 // ─────────────────────────────────────────────
-const EmptyState = () => (
+const EmptyState = () => {
+  const { st } = useShopStyles();
+  return (
   <View style={st.emptyBox}>
     <Text style={{ fontSize: 48 }}>🛍️</Text>
     <Text style={st.emptyTitle}>No Products Yet</Text>
@@ -376,12 +442,14 @@ const EmptyState = () => (
       Add products from your Firebase Console to display them here.
     </Text>
   </View>
-);
+  );
+};
 
 // ─────────────────────────────────────────────
 // SCREEN
 // ─────────────────────────────────────────────
 export default function ShopScreen() {
+  const { colors, st } = useShopStyles();
   const { products, featured, categories, loading, error, refresh } =
     useProducts();
   const [activeCategory, setActiveCategory] = useState<string>("all");
@@ -545,7 +613,12 @@ export default function ShopScreen() {
 // ─────────────────────────────────────────────
 // STYLES
 // ─────────────────────────────────────────────
-const st = StyleSheet.create({
+function makeStStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   container: { flex: 1 },
 
   header: {
@@ -647,4 +720,5 @@ const st = StyleSheet.create({
     color: colors.textMuted,
     lineHeight: 15,
   },
-});
+  });
+}

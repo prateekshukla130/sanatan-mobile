@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
-import { colors } from '../theme';
+import { useTheme } from '../theme';
 
 interface MoonPhaseProps {
   phase: number; // 0 to 1 (0 = new moon, 0.5 = full moon, 1 = new moon)
@@ -9,6 +9,7 @@ interface MoonPhaseProps {
 }
 
 export const MoonPhase: React.FC<MoonPhaseProps> = ({ phase, size = 60 }) => {
+  const { colors } = useTheme();
   // Calculate the shadow path based on phase
   const getShadowPath = (phase: number): string => {
     // Normalize phase to 0-1

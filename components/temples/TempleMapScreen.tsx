@@ -17,7 +17,7 @@ import { MapType, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import ClusteredMapView from "react-native-map-clustering";
 import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { LinearGradient } from "expo-linear-gradient";
-import { colors, spacing, typography } from "@/theme";
+import { spacing, typography, useTheme, ThemeColors } from "@/theme";
 import { useLocation } from "@/hooks/useLocation";
 import { Temple, useNearbyTemples } from "@/hooks/useNearbyTemples";
 import { TempleMarker } from "@/components/temples/TempleMarker";
@@ -32,7 +32,17 @@ const INITIAL_DELTA = {
   longitudeDelta: 0.05,
 };
 
+// ─────────────────────────────────────────────
+// SHARED THEME-AWARE STYLES
+// ─────────────────────────────────────────────
+function useTempleMapStyles() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+  return { colors, styles };
+}
+
 export function TempleMapScreen() {
+  const { colors, styles } = useTempleMapStyles();
   const scheme = useColorScheme();
   const mapRef = useRef<any>(null);
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -317,6 +327,7 @@ function FilterChip({
   active: boolean;
   onPress: () => void;
 }) {
+  const { styles } = useTempleMapStyles();
   const scale = useRef(new Animated.Value(1)).current;
 
   const pressIn = () => {
@@ -360,6 +371,7 @@ function FabButton({
   label: string;
   onPress: () => void;
 }) {
+  const { colors, styles } = useTempleMapStyles();
   const scale = useRef(new Animated.Value(1)).current;
   const glow = useRef(new Animated.Value(0.65)).current;
 
@@ -432,6 +444,7 @@ function TempleListItem({
   item: Temple;
   onPress: (temple: Temple) => void;
 }) {
+  const { styles } = useTempleMapStyles();
   const rise = useRef(new Animated.Value(8)).current;
   const fade = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(1)).current;
@@ -491,7 +504,8 @@ function TempleListItem({
   );
 }
 
-const styles = StyleSheet.create({
+function makeStyles(colors: ThemeColors) {
+  return StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -711,4 +725,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: spacing.md,
   },
-});
+  });
+}

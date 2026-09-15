@@ -11,6 +11,8 @@ import { artistService } from "@/services/artistsService";
 import * as Speech from "expo-speech";
 import { SidebarProvider } from "@/components/SideBar";
 import { AppHeader } from "./(tabs)/_layout";
+import { ThemeProvider } from "@/theme";
+import { LanguageProvider } from "@/localization";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -55,24 +57,28 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <SidebarProvider>
-          <Stack
-            screenOptions={{
-              // Use our custom header for every tab screen
-              header: () => <AppHeader />,
-            }}
-          >
-            <Stack.Screen name="(tabs)" />
-          </Stack>
-          <LocationPickerModal
-            visible={loc.status === "denied"}
-            onDetectGPS={loc.detectGPS}
-            onPickCity={loc.pickCity}
-            error={loc.error}
-          />
-        </SidebarProvider>
-      </GestureHandlerRootView>
+      <ThemeProvider>
+        <LanguageProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <SidebarProvider>
+              <Stack
+                screenOptions={{
+                  // Use our custom header for every tab screen
+                  header: () => <AppHeader />,
+                }}
+              >
+                <Stack.Screen name="(tabs)" />
+              </Stack>
+              <LocationPickerModal
+                visible={loc.status === "denied"}
+                onDetectGPS={loc.detectGPS}
+                onPickCity={loc.pickCity}
+                error={loc.error}
+              />
+            </SidebarProvider>
+          </GestureHandlerRootView>
+        </LanguageProvider>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }

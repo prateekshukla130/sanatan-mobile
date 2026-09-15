@@ -9,11 +9,12 @@ import Animated, {
 } from 'react-native-reanimated';
 import { View, StyleSheet } from 'react-native';
 import Svg, { Path, Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
-import { colors } from '../theme';
+import { useTheme } from '../theme';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
 export const AnimatedDiya: React.FC = () => {
+  const { colors } = useTheme();
   const flameScale = useSharedValue(1);
   const flameOpacity = useSharedValue(1);
   const glowOpacity = useSharedValue(0.5);
@@ -68,7 +69,9 @@ export const AnimatedDiya: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Glow effect */}
-      <AnimatedView style={[styles.glow, glowStyle]} />
+      <AnimatedView
+        style={[styles.glow, { backgroundColor: colors.diyaGlow }, glowStyle]}
+      />
       
       <Svg width="100" height="120" viewBox="0 0 100 120">
         <Defs>
@@ -124,7 +127,6 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: colors.diyaGlow,
     top: -10,
   },
 });

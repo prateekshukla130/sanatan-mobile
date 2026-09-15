@@ -21,6 +21,7 @@ import React, {
   useRef,
   useState,
   useCallback,
+  useMemo,
 } from "react";
 import {
   View,
@@ -38,7 +39,10 @@ import {
 import { Ionicons, FontAwesome6 } from "@expo/vector-icons";
 import { useRouter, usePathname } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { colors, spacing, typography } from "@/theme";
+import { useTheme, ThemeColors } from "@/theme";
+import { useLanguage, LANGUAGES } from "@/localization";
+import en from "@/localization/translations/en";
+import { LanguagePickerModal } from "@/components/LanguagePickerModal";
 
 const { width: SW, height: SH } = Dimensions.get("window");
 const DRAWER_WIDTH = Math.min(SW * 0.8, 320);
@@ -64,8 +68,7 @@ export const useSidebar = () => useContext(SidebarContext);
 // NAV ITEMS — mirrors your exact tab files
 // ─────────────────────────────────────────────
 interface NavItem {
-  labelEn: string;
-  labelHi: string;
+  navKey: keyof typeof en.nav;
   href: string;
   emoji: string;
   icon: keyof typeof Ionicons.glyphMap;
@@ -76,16 +79,14 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    labelEn: "Home",
-    labelHi: "होम",
+    navKey: "home",
     href: "/(tabs)/",
     emoji: "🏠",
     icon: "home-outline",
     iconActive: "home",
   },
   {
-    labelEn: "Nearby Temples",
-    labelHi: "नज़दीकी मंदिर",
+    navKey: "temples",
     href: "/temples",
     emoji: "🛕",
     icon: "location-outline",
@@ -94,48 +95,49 @@ const NAV_ITEMS: NavItem[] = [
     fa6Icon: "place-of-worship",
   },
   {
-    labelEn: "Kundli",
-    labelHi: "कुंडली",
+    navKey: "kundli",
     href: "/(tabs)/kundli",
     emoji: "🔯",
     icon: "planet-outline",
     iconActive: "planet",
   },
   {
-    labelEn: "Shop",
-    labelHi: "दुकान",
+    navKey: "shop",
     href: "/shop",
     emoji: "🛍️",
     icon: "storefront-outline",
     iconActive: "storefront",
   },
   {
-    labelEn: "Scriptures",
-    labelHi: "शास्त्र",
+    navKey: "ai",
+    href: "/(tabs)/ai",
+    emoji: "🕉️",
+    icon: "chatbubble-ellipses-outline",
+    iconActive: "chatbubble-ellipses",
+  },
+  {
+    navKey: "scriptures",
     href: "/(tabs)/scriptures",
     emoji: "📖",
     icon: "book-outline",
     iconActive: "book",
   },
   {
-    labelEn: "Calendar",
-    labelHi: "पञ्चाङ्ग",
+    navKey: "calendar",
     href: "/(tabs)/calendar",
     emoji: "📅",
     icon: "calendar-outline",
     iconActive: "calendar",
   },
   {
-    labelEn: "Bhajan",
-    labelHi: "भजन",
+    navKey: "bhajan",
     href: "/(tabs)/bhajan",
     emoji: "🎵",
     icon: "musical-notes-outline",
     iconActive: "musical-notes",
   },
   {
-    labelEn: "Settings",
-    labelHi: "सेटिंग्स",
+    navKey: "settings",
     href: "/settings",
     emoji: "⚙️",
     icon: "settings-outline",
@@ -145,16 +147,14 @@ const NAV_ITEMS: NavItem[] = [
 
 const QUICK_ACTIONS: NavItem[] = [
   {
-    labelEn: "Jap Counter",
-    labelHi: "जप काउंटर",
+    navKey: "jap",
     href: "/(tabs)/jap",
     emoji: "📿",
     icon: "infinite-outline",
     iconActive: "infinite",
   },
   {
-    labelEn: "Chalisa",
-    labelHi: "चालीसा",
+    navKey: "chalisa",
     href: "/(tabs)/scriptures",
     emoji: "📖",
     icon: "book-outline",
@@ -169,6 +169,14 @@ const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
+  const { colors, spacing, typography } = useTheme();
+  const { t, language } = useLanguage();
+  const [langPickerOpen, setLangPickerOpen] = useState(false);
+  const dr = useMemo(() => makeDrawerStyles(colors, spacing, typography), [
+    colors,
+    spacing,
+    typography,
+  ]);
 
   const navigate = useCallback(
     (href: string) => {
@@ -193,7 +201,7 @@ const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         </View>
         <View style={{ flex: 1 }}>
           <Text style={dr.appName}>Sanatan Dharma</Text>
-          <Text style={dr.appSub}>पञ्चाङ्ग · Spiritual Companion</Text>
+          <Text style={dr.appSub}>सनातन धर्म · {t("header.tagline")}</Text>
         </View>
         <TouchableOpacity
           style={dr.closeBtn}
@@ -204,6 +212,19 @@ const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         </TouchableOpacity>
       </View>
 
+      {/* ── Language quick-switch ── */}
+      <TouchableOpacity
+        style={dr.langRow}
+        onPress={() => setLangPickerOpen(true)}
+        activeOpacity={0.75}
+      >
+        <Ionicons name="language-outline" size={16} color={colors.gold} />
+        <Text style={dr.langRowTxt}>
+          {LANGUAGES.find((l) => l.code === language)?.nativeName}
+        </Text>
+        <Ionicons name="chevron-forward" size={14} color={colors.gold} />
+      </TouchableOpacity>
+
       <View style={dr.divider} />
 
       <ScrollView
@@ -211,7 +232,7 @@ const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
       >
         {/* ── Navigation ── */}
-        <Text style={dr.sectionLabel}>MENU · मेनू</Text>
+        <Text style={dr.sectionLabel}>{t("nav.menu").toUpperCase()}</Text>
 
         {NAV_ITEMS.map((item) => {
           const active = isActive(item.href);
@@ -239,11 +260,13 @@ const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={[dr.labelEn, active && dr.labelEnActive]}>
-                  {item.labelEn}
+                  {t(`nav.${item.navKey}`)}
                 </Text>
-                <Text style={[dr.labelHi, active && dr.labelHiActive]}>
-                  {item.labelHi}
-                </Text>
+                {language !== "en" && (
+                  <Text style={[dr.labelHi, active && dr.labelHiActive]}>
+                    {en.nav[item.navKey]}
+                  </Text>
+                )}
               </View>
               {active && <View style={dr.pip} />}
             </TouchableOpacity>
@@ -253,18 +276,20 @@ const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         <View style={dr.divider} />
 
         {/* ── Quick Actions ── */}
-        <Text style={dr.sectionLabel}>QUICK ACCESS · त्वरित</Text>
+        <Text style={dr.sectionLabel}>{t("nav.quickAccess").toUpperCase()}</Text>
         <View style={dr.quickGrid}>
           {QUICK_ACTIONS.map((item) => (
             <TouchableOpacity
-              key={item.href + item.labelEn}
+              key={item.href + item.navKey}
               style={dr.quickCard}
               onPress={() => navigate(item.href)}
               activeOpacity={0.75}
             >
               <Text style={dr.quickEmoji}>{item.emoji}</Text>
-              <Text style={dr.quickEn}>{item.labelEn}</Text>
-              <Text style={dr.quickHi}>{item.labelHi}</Text>
+              <Text style={dr.quickEn}>{t(`nav.${item.navKey}`)}</Text>
+              {language !== "en" && (
+                <Text style={dr.quickHi}>{en.nav[item.navKey]}</Text>
+              )}
             </TouchableOpacity>
           ))}
         </View>
@@ -276,6 +301,11 @@ const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           <Text style={dr.footerSub}>May all beings be happy</Text>
         </View>
       </ScrollView>
+
+      <LanguagePickerModal
+        visible={langPickerOpen}
+        onClose={() => setLangPickerOpen(false)}
+      />
     </View>
   );
 };
@@ -403,10 +433,10 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
 // ─────────────────────────────────────────────
 // HAMBURGER BUTTON
 // ─────────────────────────────────────────────
-export const HamburgerButton: React.FC<{ color?: string }> = ({
-  color = colors.gold,
-}) => {
+export const HamburgerButton: React.FC<{ color?: string }> = ({ color }) => {
   const { open } = useSidebar();
+  const { colors } = useTheme();
+  const barColor = color ?? colors.gold;
   return (
     <TouchableOpacity
       style={st.hamburger}
@@ -414,147 +444,173 @@ export const HamburgerButton: React.FC<{ color?: string }> = ({
       activeOpacity={0.65}
       hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
     >
-      <View style={[st.hamBar, { width: 22, backgroundColor: color }]} />
-      <View style={[st.hamBar, { width: 14, backgroundColor: color }]} />
-      <View style={[st.hamBar, { width: 18, backgroundColor: color }]} />
+      <View style={[st.hamBar, { width: 22, backgroundColor: barColor }]} />
+      <View style={[st.hamBar, { width: 14, backgroundColor: barColor }]} />
+      <View style={[st.hamBar, { width: 18, backgroundColor: barColor }]} />
     </TouchableOpacity>
   );
 };
 
 // ─────────────────────────────────────────────
-// STYLES — DRAWER
+// STYLES — DRAWER (theme-dependent, built per render)
 // ─────────────────────────────────────────────
-const dr = StyleSheet.create({
-  wrap: {
-    flex: 1,
-    backgroundColor: colors.bgSecondary,
-    borderRightWidth: 1,
-    borderRightColor: colors.gold + "20",
-  },
+function makeDrawerStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
+    wrap: {
+      flex: 1,
+      backgroundColor: colors.bgSecondary,
+      borderRightWidth: 1,
+      borderRightColor: colors.gold + "20",
+    },
 
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: spacing.md,
-    paddingBottom: spacing.md,
-    gap: 12,
-  },
-  omCircle: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-    backgroundColor: colors.gold + "1A",
-    borderWidth: 1.5,
-    borderColor: colors.gold + "55",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  omText: { fontSize: 22, color: colors.gold },
-  appName: {
-    fontSize: typography.fontSize.md,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
-    letterSpacing: 0.3,
-  },
-  appSub: { fontSize: 10, color: colors.gold + "99", marginTop: 1 },
-  closeBtn: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: colors.textMuted + "18",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+    header: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: spacing.md,
+      paddingBottom: spacing.md,
+      gap: 12,
+    },
+    omCircle: {
+      width: 46,
+      height: 46,
+      borderRadius: 23,
+      backgroundColor: colors.gold + "1A",
+      borderWidth: 1.5,
+      borderColor: colors.gold + "55",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    omText: { fontSize: 22, color: colors.gold },
+    appName: {
+      fontSize: typography.fontSize.md,
+      fontWeight: typography.fontWeight.bold,
+      color: colors.textPrimary,
+      letterSpacing: 0.3,
+    },
+    appSub: { fontSize: 10, color: colors.gold + "99", marginTop: 1 },
+    closeBtn: {
+      width: 30,
+      height: 30,
+      borderRadius: 15,
+      backgroundColor: colors.textMuted + "18",
+      alignItems: "center",
+      justifyContent: "center",
+    },
 
-  divider: {
-    height: 1,
-    backgroundColor: colors.divider,
-    marginHorizontal: spacing.md,
-    marginVertical: spacing.sm,
-  },
-  sectionLabel: {
-    fontSize: 9,
-    fontWeight: "800",
-    color: colors.gold + "80",
-    letterSpacing: 1.4,
-    marginHorizontal: spacing.md,
-    marginBottom: 6,
-    marginTop: 2,
-  },
+    langRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginHorizontal: spacing.md,
+      marginBottom: spacing.sm,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 8,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: colors.gold + "30",
+      backgroundColor: colors.gold + "0F",
+      gap: 8,
+    },
+    langRowTxt: {
+      flex: 1,
+      fontSize: 12,
+      fontWeight: "600",
+      color: colors.textPrimary,
+    },
 
-  navRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginHorizontal: spacing.sm,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 9,
-    borderRadius: 10,
-    gap: 10,
-    marginBottom: 2,
-  },
-  navRowActive: { backgroundColor: colors.gold },
+    divider: {
+      height: 1,
+      backgroundColor: colors.divider,
+      marginHorizontal: spacing.md,
+      marginVertical: spacing.sm,
+    },
+    sectionLabel: {
+      fontSize: 9,
+      fontWeight: "800",
+      color: colors.gold + "80",
+      letterSpacing: 1.4,
+      marginHorizontal: spacing.md,
+      marginBottom: 6,
+      marginTop: 2,
+    },
 
-  iconBox: {
-    width: 34,
-    height: 34,
-    borderRadius: 9,
-    backgroundColor: colors.cardBg,
-    borderWidth: 1,
-    borderColor: colors.cardBorder,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  iconBoxActive: {
-    backgroundColor: "rgba(255,255,255,0.22)",
-    borderColor: "rgba(255,255,255,0.28)",
-  },
+    navRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginHorizontal: spacing.sm,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 9,
+      borderRadius: 10,
+      gap: 10,
+      marginBottom: 2,
+    },
+    navRowActive: { backgroundColor: colors.gold },
 
-  labelEn: {
-    fontSize: typography.fontSize.sm,
-    fontWeight: "600",
-    color: colors.textPrimary,
-  },
-  labelEnActive: { color: colors.bgSecondary, fontWeight: "700" },
-  labelHi: { fontSize: 10, color: colors.textMuted, marginTop: 1 },
-  labelHiActive: { color: colors.bgSecondary + "BB" },
+    iconBox: {
+      width: 34,
+      height: 34,
+      borderRadius: 9,
+      backgroundColor: colors.cardBg,
+      borderWidth: 1,
+      borderColor: colors.cardBorder,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    iconBoxActive: {
+      backgroundColor: "rgba(255,255,255,0.22)",
+      borderColor: "rgba(255,255,255,0.28)",
+    },
 
-  pip: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: colors.bgSecondary,
-    marginRight: 2,
-  },
+    labelEn: {
+      fontSize: typography.fontSize.sm,
+      fontWeight: "600",
+      color: colors.textPrimary,
+    },
+    labelEnActive: { color: colors.bgSecondary, fontWeight: "700" },
+    labelHi: { fontSize: 10, color: colors.textMuted, marginTop: 1 },
+    labelHiActive: { color: colors.bgSecondary + "BB" },
 
-  quickGrid: {
-    flexDirection: "row",
-    paddingHorizontal: spacing.sm,
-    gap: 8,
-    marginBottom: 4,
-  },
-  quickCard: {
-    flex: 1,
-    backgroundColor: colors.cardBg,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: colors.gold + "28",
-    paddingVertical: spacing.md,
-    alignItems: "center",
-    gap: 4,
-  },
-  quickEmoji: { fontSize: 24 },
-  quickEn: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: colors.textPrimary,
-    textAlign: "center",
-  },
-  quickHi: { fontSize: 9, color: colors.gold + "BB", textAlign: "center" },
+    pip: {
+      width: 6,
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: colors.bgSecondary,
+      marginRight: 2,
+    },
 
-  footerBox: { alignItems: "center", paddingVertical: spacing.lg, gap: 3 },
-  footerMantra: { fontSize: 13, color: colors.gold + "CC" },
-  footerSub: { fontSize: 10, color: colors.textMuted },
-});
+    quickGrid: {
+      flexDirection: "row",
+      paddingHorizontal: spacing.sm,
+      gap: 8,
+      marginBottom: 4,
+    },
+    quickCard: {
+      flex: 1,
+      backgroundColor: colors.cardBg,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.gold + "28",
+      paddingVertical: spacing.md,
+      alignItems: "center",
+      gap: 4,
+    },
+    quickEmoji: { fontSize: 24 },
+    quickEn: {
+      fontSize: 11,
+      fontWeight: "600",
+      color: colors.textPrimary,
+      textAlign: "center",
+    },
+    quickHi: { fontSize: 9, color: colors.gold + "BB", textAlign: "center" },
+
+    footerBox: { alignItems: "center", paddingVertical: spacing.lg, gap: 3 },
+    footerMantra: { fontSize: 13, color: colors.gold + "CC" },
+    footerSub: { fontSize: 10, color: colors.textMuted },
+  });
+}
 
 // ─────────────────────────────────────────────
 // STYLES — MODAL SHELL

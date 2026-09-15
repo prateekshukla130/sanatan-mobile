@@ -15,7 +15,7 @@
  *  5. AsyncStorage persistence via useNotifications hook
  */
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -32,11 +32,32 @@ import {
 } from "react-native";
 import { GradientBackground } from "../../components/GradientBackground";
 import { Card } from "../../components/Card";
-import { colors, spacing, typography } from "../../theme";
+import { useTheme, ThemeColors, ThemeName } from "../../theme";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import { useNotifications } from "../../services/useNotification";
 import type { NotificationPrefs } from "../../services/notificationService";
+import { useLanguage, LANGUAGES } from "../../localization";
+import { LanguagePickerModal } from "../../components/LanguagePickerModal";
+
+// ─────────────────────────────────────────────
+// SHARED THEME-AWARE STYLES
+// (built once per theme change, shared by every atom in this file)
+// ─────────────────────────────────────────────
+function useSettingsStyles() {
+  const { colors, spacing, typography } = useTheme();
+  const st = useMemo(() => makeSt(colors, spacing, typography), [
+    colors,
+    spacing,
+    typography,
+  ]);
+  const tp = useMemo(() => makeTp(colors, spacing, typography), [
+    colors,
+    spacing,
+    typography,
+  ]);
+  return { colors, spacing, typography, st, tp };
+}
 
 // ─────────────────────────────────────────────
 // DEVELOPER INFO (compact)
@@ -76,7 +97,10 @@ function openEmail() {
 // ─────────────────────────────────────────────
 // ATOMS
 // ─────────────────────────────────────────────
-const Divider = () => <View style={st.divider} />;
+const Divider = () => {
+  const { st } = useSettingsStyles();
+  return <View style={st.divider} />;
+};
 
 const SectionHeader = ({
   icon,
@@ -86,15 +110,18 @@ const SectionHeader = ({
   icon: string;
   en: string;
   hi: string;
-}) => (
-  <View style={st.sectionHeader}>
-    <View style={st.sectionHeaderIcon}>
-      <Ionicons name={icon as any} size={15} color={colors.gold} />
+}) => {
+  const { colors, st } = useSettingsStyles();
+  return (
+    <View style={st.sectionHeader}>
+      <View style={st.sectionHeaderIcon}>
+        <Ionicons name={icon as any} size={15} color={colors.gold} />
+      </View>
+      <Text style={st.sectionHeaderEn}>{en}</Text>
+      <Text style={st.sectionHeaderHi}>{hi}</Text>
     </View>
-    <Text style={st.sectionHeaderEn}>{en}</Text>
-    <Text style={st.sectionHeaderHi}>{hi}</Text>
-  </View>
-);
+  );
+};
 
 // ── Toggle Row ───────────────────────────────
 const ToggleRow = ({
@@ -115,30 +142,37 @@ const ToggleRow = ({
   value: boolean;
   onValueChange: (v: boolean) => void;
   disabled?: boolean;
-}) => (
-  <View style={[st.toggleRow, disabled && { opacity: 0.45 }]}>
-    <View
-      style={[
-        st.toggleIcon,
-        { backgroundColor: (iconColor ?? colors.gold) + "18" },
-      ]}
-    >
-      <Ionicons name={icon as any} size={18} color={iconColor ?? colors.gold} />
+}) => {
+  const { colors, st } = useSettingsStyles();
+  return (
+    <View style={[st.toggleRow, disabled && { opacity: 0.45 }]}>
+      <View
+        style={[
+          st.toggleIcon,
+          { backgroundColor: (iconColor ?? colors.gold) + "18" },
+        ]}
+      >
+        <Ionicons
+          name={icon as any}
+          size={18}
+          color={iconColor ?? colors.gold}
+        />
+      </View>
+      <View style={st.toggleLabels}>
+        <Text style={st.toggleLabelEn}>{labelEn}</Text>
+        {subEn ? <Text style={st.toggleSub}>{subEn}</Text> : null}
+        <Text style={st.toggleLabelHi}>{labelHi}</Text>
+      </View>
+      <Switch
+        value={value}
+        onValueChange={disabled ? undefined : onValueChange}
+        trackColor={{ false: colors.cardBorder, true: colors.gold + "80" }}
+        thumbColor={value ? colors.gold : colors.textMuted}
+        ios_backgroundColor={colors.cardBorder}
+      />
     </View>
-    <View style={st.toggleLabels}>
-      <Text style={st.toggleLabelEn}>{labelEn}</Text>
-      {subEn ? <Text style={st.toggleSub}>{subEn}</Text> : null}
-      <Text style={st.toggleLabelHi}>{labelHi}</Text>
-    </View>
-    <Switch
-      value={value}
-      onValueChange={disabled ? undefined : onValueChange}
-      trackColor={{ false: colors.cardBorder, true: colors.gold + "80" }}
-      thumbColor={value ? colors.gold : colors.textMuted}
-      ios_backgroundColor={colors.cardBorder}
-    />
-  </View>
-);
+  );
+};
 
 // ── Time Picker Row ──────────────────────────
 const TimeRow = ({
@@ -158,6 +192,7 @@ const TimeRow = ({
   onPress: () => void;
   visible: boolean;
 }) => {
+  const { colors, st } = useSettingsStyles();
   if (!visible) return null;
   const h = String(hour).padStart(2, "0");
   const m = String(minute).padStart(2, "0");
@@ -192,34 +227,41 @@ const LinkRow = ({
   sub?: string;
   onPress: () => void;
   iconColor?: string;
-}) => (
-  <TouchableOpacity style={st.linkRow} onPress={onPress} activeOpacity={0.72}>
-    <View
-      style={[
-        st.linkIconBox,
-        { backgroundColor: (iconColor ?? colors.gold) + "18" },
-      ]}
-    >
-      <Ionicons name={icon as any} size={20} color={iconColor ?? colors.gold} />
-    </View>
-    <View style={st.linkText}>
-      <View style={st.linkLabelRow}>
-        <Text style={st.linkLabelEn}>{labelEn}</Text>
-        <Text style={st.linkLabelHi}>{labelHi}</Text>
+}) => {
+  const { colors, st } = useSettingsStyles();
+  return (
+    <TouchableOpacity style={st.linkRow} onPress={onPress} activeOpacity={0.72}>
+      <View
+        style={[
+          st.linkIconBox,
+          { backgroundColor: (iconColor ?? colors.gold) + "18" },
+        ]}
+      >
+        <Ionicons
+          name={icon as any}
+          size={20}
+          color={iconColor ?? colors.gold}
+        />
       </View>
-      {sub ? (
-        <Text style={st.linkSub} numberOfLines={1}>
-          {sub}
-        </Text>
-      ) : null}
-    </View>
-    <Ionicons
-      name="chevron-forward"
-      size={16}
-      color={colors.textMuted + "80"}
-    />
-  </TouchableOpacity>
-);
+      <View style={st.linkText}>
+        <View style={st.linkLabelRow}>
+          <Text style={st.linkLabelEn}>{labelEn}</Text>
+          <Text style={st.linkLabelHi}>{labelHi}</Text>
+        </View>
+        {sub ? (
+          <Text style={st.linkSub} numberOfLines={1}>
+            {sub}
+          </Text>
+        ) : null}
+      </View>
+      <Ionicons
+        name="chevron-forward"
+        size={16}
+        color={colors.textMuted + "80"}
+      />
+    </TouchableOpacity>
+  );
+};
 
 // ─────────────────────────────────────────────
 // INLINE TIME PICKER MODAL
@@ -244,6 +286,7 @@ const TimePickerModal = ({
   onConfirm: (t: TimePick) => void;
   onClose: () => void;
 }) => {
+  const { colors, tp } = useSettingsStyles();
   const [h, setH] = useState(initial.hour);
   const [m, setM] = useState(initial.minute);
 
@@ -319,47 +362,91 @@ const WeekdayPicker = ({
 }: {
   selected: number;
   onChange: (d: number) => void;
-}) => (
-  <View style={st.weekdayRow}>
-    {DAYS_SHORT.map((d, i) => (
-      <TouchableOpacity
-        key={d}
-        style={[st.dayBtn, selected === i && st.dayBtnActive]}
-        onPress={() => onChange(i)}
-        activeOpacity={0.7}
-      >
-        <Text style={[st.dayBtnTxt, selected === i && st.dayBtnTxtActive]}>
-          {d}
-        </Text>
-        <Text style={[st.dayBtnHi, selected === i && st.dayBtnTxtActive]}>
-          {DAYS_SHORT_HI[i]}
-        </Text>
-      </TouchableOpacity>
-    ))}
-  </View>
-);
+}) => {
+  const { st } = useSettingsStyles();
+  return (
+    <View style={st.weekdayRow}>
+      {DAYS_SHORT.map((d, i) => (
+        <TouchableOpacity
+          key={d}
+          style={[st.dayBtn, selected === i && st.dayBtnActive]}
+          onPress={() => onChange(i)}
+          activeOpacity={0.7}
+        >
+          <Text style={[st.dayBtnTxt, selected === i && st.dayBtnTxtActive]}>
+            {d}
+          </Text>
+          <Text style={[st.dayBtnHi, selected === i && st.dayBtnTxtActive]}>
+            {DAYS_SHORT_HI[i]}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+};
 
 // ─────────────────────────────────────────────
 // PERMISSION BANNER
 // ─────────────────────────────────────────────
-const PermissionBanner = ({ onRequest }: { onRequest: () => void }) => (
-  <TouchableOpacity
-    style={st.permBanner}
-    onPress={onRequest}
-    activeOpacity={0.85}
-  >
-    <Ionicons name="notifications-off-outline" size={20} color="#F59E0B" />
-    <View style={{ flex: 1, marginLeft: spacing.sm }}>
-      <Text style={st.permBannerTitle}>
-        Notifications Disabled · सूचनाएं बंद हैं
+const PermissionBanner = ({ onRequest }: { onRequest: () => void }) => {
+  const { spacing, st } = useSettingsStyles();
+  return (
+    <TouchableOpacity
+      style={st.permBanner}
+      onPress={onRequest}
+      activeOpacity={0.85}
+    >
+      <Ionicons name="notifications-off-outline" size={20} color="#F59E0B" />
+      <View style={{ flex: 1, marginLeft: spacing.sm }}>
+        <Text style={st.permBannerTitle}>
+          Notifications Disabled · सूचनाएं बंद हैं
+        </Text>
+        <Text style={st.permBannerSub}>
+          Tap to grant permission · अनुमति देने के लिए टैप करें
+        </Text>
+      </View>
+      <Ionicons name="chevron-forward" size={16} color="#F59E0B" />
+    </TouchableOpacity>
+  );
+};
+
+// ── Theme Option ─────────────────────────────
+const ThemeOption = ({
+  active,
+  label,
+  sub,
+  swatch,
+  onPress,
+}: {
+  active: boolean;
+  label: string;
+  sub: string;
+  swatch: string;
+  onPress: () => void;
+}) => {
+  const { colors, st } = useSettingsStyles();
+  return (
+    <TouchableOpacity
+      style={[st.themeOption, active && st.themeOptionActive]}
+      onPress={onPress}
+      activeOpacity={0.8}
+    >
+      <View style={[st.themeSwatch, { backgroundColor: swatch }]} />
+      <Text style={[st.themeOptionLabel, active && { color: colors.gold }]}>
+        {label}
       </Text>
-      <Text style={st.permBannerSub}>
-        Tap to grant permission · अनुमति देने के लिए टैप करें
-      </Text>
-    </View>
-    <Ionicons name="chevron-forward" size={16} color="#F59E0B" />
-  </TouchableOpacity>
-);
+      <Text style={st.themeOptionSub}>{sub}</Text>
+      {active && (
+        <Ionicons
+          name="checkmark-circle"
+          size={16}
+          color={colors.gold}
+          style={{ marginTop: 4 }}
+        />
+      )}
+    </TouchableOpacity>
+  );
+};
 
 // ─────────────────────────────────────────────
 // MAIN SCREEN
@@ -367,6 +454,10 @@ const PermissionBanner = ({ onRequest }: { onRequest: () => void }) => (
 export default function SettingsScreen() {
   const { prefs, loading, permissionGranted, updatePref, requestPermission } =
     useNotifications();
+  const { colors, themeName, setThemeName } = useTheme();
+  const { language, t } = useLanguage();
+  const { st } = useSettingsStyles();
+  const [langPickerOpen, setLangPickerOpen] = useState(false);
 
   // ── Time picker state ──────────────────────
   const [timePicker, setTimePicker] = useState<{
@@ -393,6 +484,59 @@ export default function SettingsScreen() {
         contentContainerStyle={{ paddingBottom: 56 }}
         showsVerticalScrollIndicator={false}
       >
+        {/* ══════════════════════════════════════
+            APPEARANCE & LANGUAGE
+        ══════════════════════════════════════ */}
+        <View style={st.cardWrap}>
+          <View style={st.cardHeader}>
+            <Text style={st.cardTitle}>
+              🎨 {t("appearance.sectionTitle")}
+            </Text>
+          </View>
+
+          <View style={st.themeRow}>
+            <ThemeOption
+              active={themeName === "dark"}
+              label={t("appearance.dark")}
+              sub={t("appearance.darkSub")}
+              swatch="#4A0E0E"
+              onPress={() => setThemeName("dark")}
+            />
+            <ThemeOption
+              active={themeName === "light"}
+              label={t("appearance.light")}
+              sub={t("appearance.lightSub")}
+              swatch="#FFF8F0"
+              onPress={() => setThemeName("light")}
+            />
+          </View>
+
+          <Divider />
+
+          <TouchableOpacity
+            style={st.linkRow}
+            onPress={() => setLangPickerOpen(true)}
+            activeOpacity={0.72}
+          >
+            <View
+              style={[st.linkIconBox, { backgroundColor: colors.gold + "18" }]}
+            >
+              <Ionicons name="language-outline" size={20} color={colors.gold} />
+            </View>
+            <View style={st.linkText}>
+              <Text style={st.linkLabelEn}>{t("appearance.languageLabel")}</Text>
+              <Text style={st.linkSub}>
+                {LANGUAGES.find((l) => l.code === language)?.nativeName}
+              </Text>
+            </View>
+            <Ionicons
+              name="chevron-forward"
+              size={16}
+              color={colors.textMuted + "80"}
+            />
+          </TouchableOpacity>
+        </View>
+
         {/* ══════════════════════════════════════
             NOTIFICATIONS
         ══════════════════════════════════════ */}
@@ -828,6 +972,10 @@ export default function SettingsScreen() {
         onConfirm={handleTimeConfirm}
         onClose={() => setTimePicker((p) => ({ ...p, visible: false }))}
       />
+      <LanguagePickerModal
+        visible={langPickerOpen}
+        onClose={() => setLangPickerOpen(false)}
+      />
     </GradientBackground>
   );
 }
@@ -847,24 +995,28 @@ const InfoRow = ({
   labelHi: string;
   valueEn: string;
   valueHi?: string;
-}) => (
-  <View style={st.infoRow}>
-    <Ionicons name={icon as any} size={22} color={colors.gold} />
-    <View style={st.infoText}>
-      <View style={st.infoLabelRow}>
-        <Text style={st.infoLabelEn}>{labelEn}</Text>
-        <Text style={st.infoLabelHi}>{labelHi}</Text>
+}) => {
+  const { colors, st } = useSettingsStyles();
+  return (
+    <View style={st.infoRow}>
+      <Ionicons name={icon as any} size={22} color={colors.gold} />
+      <View style={st.infoText}>
+        <View style={st.infoLabelRow}>
+          <Text style={st.infoLabelEn}>{labelEn}</Text>
+          <Text style={st.infoLabelHi}>{labelHi}</Text>
+        </View>
+        <Text style={st.infoValueEn}>{valueEn}</Text>
+        {valueHi ? <Text style={st.infoValueHi}>{valueHi}</Text> : null}
       </View>
-      <Text style={st.infoValueEn}>{valueEn}</Text>
-      {valueHi ? <Text style={st.infoValueHi}>{valueHi}</Text> : null}
     </View>
-  </View>
-);
+  );
+};
 
 // ─────────────────────────────────────────────
-// STYLES
+// STYLES (theme-dependent — built via useSettingsStyles())
 // ─────────────────────────────────────────────
-const st = StyleSheet.create({
+function makeSt(colors: ThemeColors, spacing: Record<string, number>, typography: any) {
+  return StyleSheet.create({
   container: { flex: 1 },
 
   // Card wrapper (replaces Card component for full control)
@@ -895,6 +1047,44 @@ const st = StyleSheet.create({
     height: 1,
     backgroundColor: colors.divider,
     marginHorizontal: spacing.md,
+  },
+
+  // Theme option cards
+  themeRow: {
+    flexDirection: "row",
+    gap: spacing.sm,
+    padding: spacing.md,
+  },
+  themeOption: {
+    flex: 1,
+    alignItems: "center",
+    padding: spacing.sm,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
+    backgroundColor: colors.bgSecondary,
+    gap: 4,
+  },
+  themeOptionActive: {
+    borderColor: colors.gold,
+    backgroundColor: colors.gold + "12",
+  },
+  themeSwatch: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
+  },
+  themeOptionLabel: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: colors.textPrimary,
+  },
+  themeOptionSub: {
+    fontSize: 10,
+    color: colors.textMuted,
+    textAlign: "center",
   },
 
   // Section sub-header inside notification card
@@ -1186,12 +1376,14 @@ const st = StyleSheet.create({
     color: colors.textMuted,
     marginTop: spacing.xs,
   },
-});
+  });
+}
 
 // ─────────────────────────────────────────────
-// TIME PICKER MODAL STYLES
+// TIME PICKER MODAL STYLES (theme-dependent)
 // ─────────────────────────────────────────────
-const tp = StyleSheet.create({
+function makeTp(colors: ThemeColors, spacing: Record<string, number>, typography: any) {
+  return StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.75)",
@@ -1263,4 +1455,5 @@ const tp = StyleSheet.create({
     color: colors.bgSecondary,
     fontWeight: "bold",
   },
-});
+  });
+}

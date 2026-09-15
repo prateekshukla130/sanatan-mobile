@@ -15,7 +15,7 @@
  *   expo install expo-speech expo-haptics
  */
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
   View,
   Text,
@@ -34,8 +34,9 @@ import {
 import * as Haptics from "expo-haptics";
 import * as Speech from "expo-speech";
 import { GradientBackground } from "../../components/GradientBackground";
-import { colors, spacing, typography, theme } from "../../theme";
+import { spacing, typography, theme, useTheme, ThemeColors } from "../../theme";
 import { storageService } from "../../services/storageService";
+import { journeyService } from "../../services/journeyService";
 import { Mantra, mantraService } from "../../services/mantraService";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
@@ -78,9 +79,28 @@ interface JapSettings {
 }
 
 // ─────────────────────────────────────────────
+// SHARED THEME-AWARE STYLES
+// (built once per theme change, shared by every atom in this file)
+// ─────────────────────────────────────────────
+function useJapStyles() {
+  const { colors, spacing, typography } = useTheme();
+  const st = useMemo(
+    () => makeSt(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  const md = useMemo(
+    () => makeMd(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  return { colors, spacing, typography, st, md };
+}
+
+// ─────────────────────────────────────────────
 // MALA BEAD RING
 // ─────────────────────────────────────────────
-const MalaRing = React.memo(({ progress }: { progress: number }) => (
+const MalaRing = React.memo(({ progress }: { progress: number }) => {
+  const { colors } = useJapStyles();
+  return (
   <View style={{ width: RING_SIZE, height: RING_SIZE, position: "relative" }}>
     {Array.from({ length: BEAD_COUNT }).map((_, i) => {
       const angle = (i / BEAD_COUNT) * 2 * Math.PI - Math.PI / 2;
@@ -115,7 +135,8 @@ const MalaRing = React.memo(({ progress }: { progress: number }) => (
       );
     })}
   </View>
-));
+  );
+});
 
 // ─────────────────────────────────────────────
 // STAT BOX ATOM
@@ -130,14 +151,17 @@ const StatBox = ({
   value: string | number;
   labelHi: string;
   labelEn: string;
-}) => (
+}) => {
+  const { st } = useJapStyles();
+  return (
   <View style={st.statBox}>
     <Text style={st.statIcon}>{icon}</Text>
     <Text style={st.statValue}>{value}</Text>
     <Text style={st.statLabelHi}>{labelHi}</Text>
     <Text style={st.statLabelEn}>{labelEn}</Text>
   </View>
-);
+  );
+};
 
 // ─────────────────────────────────────────────
 // SETTINGS ROW ATOM
@@ -156,7 +180,9 @@ const SettingRow = ({
   subtitle?: string;
   value: boolean;
   onChange: (v: boolean) => void;
-}) => (
+}) => {
+  const { colors, st } = useJapStyles();
+  return (
   <View style={st.settingRow}>
     <Text style={st.settingIcon}>{icon}</Text>
     <View style={st.settingInfo}>
@@ -171,12 +197,14 @@ const SettingRow = ({
       thumbColor={value ? colors.gold : colors.textMuted}
     />
   </View>
-);
+  );
+};
 
 // ─────────────────────────────────────────────
 // MAIN SCREEN
 // ─────────────────────────────────────────────
 export default function JapScreen() {
+  const { colors, st, md } = useJapStyles();
   // ── State ──────────────────────────────────
   const [count, setCount] = useState(0);
   const [selectedMantra, setSelectedMantra] = useState<Mantra>([]);
@@ -362,6 +390,7 @@ export default function JapScreen() {
 
     setCount(newCount);
     await storageService.saveJapCount(newCount);
+    await journeyService.logJapIncrement(1);
   }, [count, settings, selectedMantra, speak]);
 
   // ── RESET ───────────────────────────────────
@@ -1069,7 +1098,12 @@ export default function JapScreen() {
 // ─────────────────────────────────────────────
 // SCREEN STYLES
 // ─────────────────────────────────────────────
-const st = StyleSheet.create({
+function makeSt(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   container: { flex: 1 },
   content: {
     paddingVertical: spacing.lg,
@@ -1383,12 +1417,18 @@ const st = StyleSheet.create({
     alignSelf: "flex-start",
   },
   testTtsTxt: { fontSize: typography.fontSize.sm, color: colors.gold },
-});
+  });
+}
 
 // ─────────────────────────────────────────────
 // MODAL STYLES
 // ─────────────────────────────────────────────
-const md = StyleSheet.create({
+function makeMd(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.65)",
@@ -1650,4 +1690,5 @@ const md = StyleSheet.create({
     color: "#EF4444",
     fontWeight: "600",
   },
-});
+  });
+}

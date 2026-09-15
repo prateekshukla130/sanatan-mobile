@@ -16,7 +16,13 @@
  * - Uses expo-audio instead of expo-av
  */
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 
 import {
   View,
@@ -41,7 +47,7 @@ import {
 import * as DocumentPicker from "expo-document-picker";
 
 import { GradientBackground } from "../../components/GradientBackground";
-import { colors, spacing, typography } from "../../theme";
+import { spacing, typography, useTheme, ThemeColors } from "../../theme";
 import { bhajanService, Bhajan } from "../../services/bhajanService";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -58,6 +64,27 @@ import Animated, {
 import { artistService } from "@/services/artistsService";
 
 const { width: SW } = Dimensions.get("window");
+
+// ─────────────────────────────────────────────
+// SHARED THEME-AWARE STYLES
+// (built once per theme change, shared by every atom in this file)
+// ─────────────────────────────────────────────
+function useBhajanStyles() {
+  const { colors, spacing, typography } = useTheme();
+  const st = useMemo(
+    () => makeStyles(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  const npStyle = useMemo(
+    () => makeNpStyles(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  const ytStyle = useMemo(
+    () => makeYtStyles(colors, spacing, typography),
+    [colors, spacing, typography],
+  );
+  return { colors, spacing, typography, st, npStyle, ytStyle };
+}
 
 // ─────────────────────────────────────────────
 // TYPES
@@ -147,6 +174,7 @@ const SpinDisc = ({
   size?: number;
   emoji?: string;
 }) => {
+  const { colors } = useBhajanStyles();
   const rotate = useSharedValue(0);
 
   useEffect(() => {
@@ -213,6 +241,7 @@ function EmptyState({
   msgEn: string;
   subEn?: string;
 }) {
+  const { colors, st } = useBhajanStyles();
   return (
     <View style={st.emptyState}>
       <Ionicons name={icon as any} size={60} color={colors.textMuted + "60"} />
@@ -299,6 +328,8 @@ function YouTubeWebView({ url }: { url: string }) {
 // ─────────────────────────────────────────────
 
 export default function BhajanScreen() {
+  const { colors, st, npStyle, ytStyle } = useBhajanStyles();
+
   const [activeTab, setActiveTab] = useState<Tab>("library");
 
   const [selectedDeity, setSelectedDeity] = useState("All");
@@ -1535,10 +1566,15 @@ export default function BhajanScreen() {
 }
 
 // ─────────────────────────────────────────────
-// STYLES
+// STYLES (theme-dependent — built via useBhajanStyles())
 // ─────────────────────────────────────────────
 
-const st = StyleSheet.create({
+function makeStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -2053,13 +2089,19 @@ const st = StyleSheet.create({
     color: colors.textMuted,
     lineHeight: 18,
   },
-});
+  });
+}
 
 // ─────────────────────────────────────────────
-// NOW PLAYING STYLES
+// NOW PLAYING STYLES (theme-dependent — built via useBhajanStyles())
 // ─────────────────────────────────────────────
 
-const npStyle = StyleSheet.create({
+function makeNpStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.85)",
@@ -2218,13 +2260,19 @@ const npStyle = StyleSheet.create({
     fontSize: 13,
     color: colors.textMuted,
   },
-});
+  });
+}
 
 // ─────────────────────────────────────────────
-// YOUTUBE STYLES
+// YOUTUBE STYLES (theme-dependent — built via useBhajanStyles())
 // ─────────────────────────────────────────────
 
-const ytStyle = StyleSheet.create({
+function makeYtStyles(
+  colors: ThemeColors,
+  spacing: Record<string, number>,
+  typography: any,
+) {
+  return StyleSheet.create({
   ytHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -2255,4 +2303,5 @@ const ytStyle = StyleSheet.create({
     fontSize: typography.fontSize.lg,
     fontWeight: "bold",
   },
-});
+  });
+}
